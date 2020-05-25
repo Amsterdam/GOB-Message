@@ -1,0 +1,21 @@
+version: '3.0'
+
+services:
+
+  gobmessage:
+    build: src
+    container_name: gobmessage
+    ports:
+      - "8167:8000"
+    environment:
+      MESSAGE_BROKER_ADDRESS: rabbitmq
+      UWSGI_HTTP: ":8000"
+      UWSGI_MODULE: "gobmessage.wsgi"
+      UWSGI_CALLABLE: "app"
+      UWSGI_MASTER: 1
+      API_HOST: http://gobapi:8001
+
+networks:
+  default:
+    external:
+      name: gob-network
