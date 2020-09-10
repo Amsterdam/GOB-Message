@@ -13,7 +13,12 @@ services:
       UWSGI_MODULE: "gobmessage.wsgi"
       UWSGI_CALLABLE: "app"
       UWSGI_MASTER: 1
+      UWSGI_PROCESSES: "4"
+      UWSGI_LAZY: "1"
+      UWSGI_ENABLE_THREADS: ""
+      UWSGI_THREADS: ""
       API_HOST: http://gobapi:8001
+    env_file: .env
 
 networks:
   default:
