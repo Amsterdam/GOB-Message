@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from gobmessage.config import GOB_MESSAGE_PORT, API_BASE_PATH
+from gobmessage.config import API_BASE_PATH
 from gobmessage.hr.endpoint import hr_endpoint
 
 
@@ -13,7 +13,7 @@ def _health():
     return 'Connectivity OK'
 
 
-def get_app():
+def get_flask_app():
     """
     Initializes the Flask App that serves the SOAP endpoint(s)
 
@@ -34,13 +34,3 @@ def get_app():
         app.route(rule=route, methods=methods)(view_func)
 
     return app
-
-
-def run():
-    """
-    Get the Flask app and run it at the port as defined in config
-
-    :return: None
-    """
-    app = get_app()
-    app.run(port=GOB_MESSAGE_PORT)
