@@ -14,4 +14,6 @@ RUN rm requirements.txt
 # Copy gobmessage module
 COPY gobmessage gobmessage
 
+USER datapunt
+
 CMD uwsgi
