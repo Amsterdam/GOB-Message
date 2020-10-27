@@ -1,3 +1,5 @@
+import os
+
 from threading import Thread
 
 from gobcore.message_broker.initialise_queues import create_queue_with_binding
@@ -19,10 +21,14 @@ SERVICEDEFINITION = {
 
 
 def run_message_thread():
-    # First create queue and binding if not exists yet
-    create_queue_with_binding(exchange=MESSAGE_EXCHANGE, queue=HR_MESSAGE_QUEUE, key=HR_MESSAGE_KEY)
-
-    messagedriven_service(SERVICEDEFINITION, "Message")
+    try:
+        # First create queue and binding if not exists yet
+        create_queue_with_binding(exchange=MESSAGE_EXCHANGE, queue=HR_MESSAGE_QUEUE, key=HR_MESSAGE_KEY)
+        messagedriven_service(SERVICEDEFINITION, "Message")
+    except:  # noqa: E722 do not use bare 'except'
+        pass
+    print(f"ERROR: no connection with GOB message broker, application is stopped")
+    os._exit(os.EX_UNAVAILABLE)
 
 
 def get_app():
