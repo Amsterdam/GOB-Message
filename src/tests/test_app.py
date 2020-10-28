@@ -8,9 +8,10 @@ from gobmessage.app import HR_MESSAGE_KEY, HR_MESSAGE_QUEUE, MESSAGE_EXCHANGE, S
 
 class TestApp(TestCase):
 
+    @patch("gobmessage.app.os._exit")
     @patch("gobmessage.app.messagedriven_service")
     @patch("gobmessage.app.create_queue_with_binding")
-    def test_run_message_thread(self, mock_create_queue, mock_messagedriven_service):
+    def test_run_message_thread(self, mock_create_queue, mock_messagedriven_service, mock_os_exit):
         mock = MagicMock()
         mock.attach_mock(mock_create_queue, 'create_queue')
         mock.attach_mock(mock_messagedriven_service, 'messagedriven_service')
@@ -21,6 +22,11 @@ class TestApp(TestCase):
             call.create_queue(exchange=MESSAGE_EXCHANGE, queue=HR_MESSAGE_QUEUE, key=HR_MESSAGE_KEY),
             call.messagedriven_service(SERVICEDEFINITION, "Message")
         ])
+
+        mock_messagedriven_service.side_effect = Exception
+        run_message_thread()
+
+
 
     @patch("gobmessage.app.Thread")
     @patch("gobmessage.app.get_flask_app")
