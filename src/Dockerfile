@@ -11,6 +11,9 @@ COPY requirements.txt /app/
 RUN pip3 install --no-cache-dir -r requirements.txt
 RUN rm requirements.txt
 
+# Create directory for client certs
+RUN mkdir -p /certs/gob/ && chmod -R 755 /certs
+
 # Copy gobmessage module
 COPY gobmessage gobmessage
 
