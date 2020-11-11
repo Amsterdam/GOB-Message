@@ -81,6 +81,7 @@ node('GOBBUILD') {
                         parameters: [
                             [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
                             [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-gob-message.yml'],
+                            [$class: 'StringParameterValue', name: 'PLAYBOOKPARAMS', value: "-e cmdb_id=app_gob-message"]
                         ]
                 }
             }
