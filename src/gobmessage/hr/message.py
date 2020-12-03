@@ -25,8 +25,6 @@ class KvkUpdateBericht:
     def get_kvk_nummer(self):
         elm = self.xmltree.find(
             "."
-            "/{%s}Body" % (self.namespaces['soapenv']) + ""
-            "/{%s}VerstrekkingDoorLV" % self.namespaces['dgl'] + ""
             "/gebeurtenisinhoud"
             "/{%s}UpdateBericht" % self.namespaces['kvkupdate'] + ""
             "/{%s}heeftBetrekkingOp" % self.namespaces['kvkbericht'] + ""
@@ -39,8 +37,6 @@ class KvkUpdateBericht:
     def get_vestigingsnummer(self):
         elm = self.xmltree.find(
             "."
-            "/{%s}Body" % (self.namespaces['soapenv']) + ""
-            "/{%s}VerstrekkingDoorLV" % self.namespaces['dgl'] + ""
             "/gebeurtenisinhoud"
             "/{%s}UpdateBericht" % self.namespaces['kvkupdate'] + ""
             "/{%s}heeftBetrekkingOp" % self.namespaces['kvkbericht'] + ""
@@ -64,11 +60,13 @@ def hr_message_handler(msg: dict):
     vestigingsnummer = message.get_vestigingsnummer()
 
     service = KvkDataService()
-    inschrijving = service.ophalen_inschrijving_by_kvk_nummer(kvk)
-    vestiging = service.ophalen_vestiging_by_vestigingsnummer(vestigingsnummer)
 
-    # Print results for now
-    print("INSCHRIJVING")
-    print(inschrijving)
-    print("VESTIGING")
-    print(vestiging)
+    if kvk:
+        inschrijving = service.ophalen_inschrijving_by_kvk_nummer(kvk)
+        print("INSCHRIJVING")
+        print(inschrijving)
+
+    if vestigingsnummer:
+        vestiging = service.ophalen_vestiging_by_vestigingsnummer(vestigingsnummer)
+        print("VESTIGING")
+        print(vestiging)
