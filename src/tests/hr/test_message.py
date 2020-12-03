@@ -14,8 +14,6 @@ class TestKvkUpdateBericht(TestCase):
             (
                 "get_kvk_nummer",
                 "."
-                "/{http://schemas.xmlsoap.org/soap/envelope/}Body"
-                "/{http://www.digilevering.nl/digilevering.xsd}VerstrekkingDoorLV"
                 "/gebeurtenisinhoud"
                 "/{http://schemas.kvk.nl/schemas/hrip/update/2018/01}UpdateBericht"
                 "/{http://schemas.kvk.nl/schemas/hrip/bericht/2018/01}heeftBetrekkingOp"
@@ -23,8 +21,6 @@ class TestKvkUpdateBericht(TestCase):
             (
                 "get_vestigingsnummer",
                 "."
-                "/{http://schemas.xmlsoap.org/soap/envelope/}Body"
-                "/{http://www.digilevering.nl/digilevering.xsd}VerstrekkingDoorLV"
                 "/gebeurtenisinhoud"
                 "/{http://schemas.kvk.nl/schemas/hrip/update/2018/01}UpdateBericht"
                 "/{http://schemas.kvk.nl/schemas/hrip/bericht/2018/01}heeftBetrekkingOp"
