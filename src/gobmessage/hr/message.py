@@ -65,8 +65,12 @@ def hr_message_handler(msg: dict):
         inschrijving = service.ophalen_inschrijving_by_kvk_nummer(kvk)
         print("INSCHRIJVING")
         print(inschrijving)
+    else:
+        print("No new data retrieved because 'KvK nummer' was not found in the received message")
 
     if vestigingsnummer:
         vestiging = service.ophalen_vestiging_by_vestigingsnummer(vestigingsnummer)
         print("VESTIGING")
         print(vestiging)
+    else:
+        print("No new data retrieved because 'Vestiging' was not found in the received message")
