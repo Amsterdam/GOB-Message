@@ -16,7 +16,9 @@ services:
       UWSGI_ENABLE_THREADS: ""
       UWSGI_THREADS: ""
       API_HOST: http://gobapi:8001
-    env_file: .env
+      HR_KEYFILE: /app/${HR_KEYFILE}
+      HR_CERTFILE: /app/${HR_CERTFILE}
+      KVK_DATASERVICE_ADDRESS: ${KVK_DATASERVICE_ADDRESS}
 
 networks:
   default:
