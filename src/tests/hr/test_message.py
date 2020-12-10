@@ -62,3 +62,17 @@ class TestMessage(TestCase):
             call("VESTIGING"),
             call(mock_data_service().ophalen_vestiging_by_vestigingsnummer()),
         ])
+
+    @patch("gobmessage.hr.message.KvkDataService")
+    @patch("gobmessage.hr.message.KvkUpdateBericht")
+    @patch("builtins.print")
+    def test_hr_message_handler_no_results(self, mock_print, mock_bericht, mock_data_service):
+        mocked_bericht = mock_bericht.return_value
+        mocked_bericht.get_kvk_nummer.return_value = None
+        mocked_bericht.get_vestigingsnummer.return_value = None
+        hr_message_handler({'contents': 'message'})
+
+        mock_print.assert_has_calls([
+            call("No new data retrieved because 'KvK nummer' was not found in the received message"),
+            call("No new data retrieved because 'Vestiging' was not found in the received message"),
+        ])
