@@ -5,7 +5,7 @@ from gobmessage.config import HR_MESSAGE_KEY, MESSAGE_EXCHANGE
 from gobmessage.database.model import KvkUpdateMessage
 from gobmessage.database.repository import KvkUpdateMessages
 from gobmessage.database.session import DatabaseSession
-from gobmessage.hr.message import KvkUpdateBericht
+from gobmessage.hr.kvk_dataservice.update_bericht import KvkUpdateBericht
 
 
 def hr_endpoint():
