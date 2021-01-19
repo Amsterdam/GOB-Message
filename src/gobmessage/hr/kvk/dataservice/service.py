@@ -4,7 +4,7 @@ from zeep import Client
 from zeep.transports import Transport
 
 from gobmessage.config import HR_KEYFILE, HR_CERTFILE, KVK_DATASERVICE_ADDRESS
-from gobmessage.hr.kvk_dataservice.binary_signature import KvkDataServiceBinarySignature
+from gobmessage.hr.kvk.dataservice.binary_signature import KvkDataServiceBinarySignature
 
 
 class KvkDataService:

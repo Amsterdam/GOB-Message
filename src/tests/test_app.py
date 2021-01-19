@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, call, patch
 
-from gobmessage.app import HR_MESSAGE_KEY, HR_MESSAGE_QUEUE, MESSAGE_EXCHANGE, SERVICEDEFINITION, get_app, run, \
+from gobmessage.app import KVK_MESSAGE_KEY, KVK_MESSAGE_QUEUE, MESSAGE_EXCHANGE, SERVICEDEFINITION, get_app, run, \
     run_message_thread
 
 
@@ -18,7 +18,7 @@ class TestApp(TestCase):
         run_message_thread()
 
         mock.assert_has_calls([
-            call.create_queue(exchange=MESSAGE_EXCHANGE, queue=HR_MESSAGE_QUEUE, key=HR_MESSAGE_KEY),
+            call.create_queue(exchange=MESSAGE_EXCHANGE, queue=KVK_MESSAGE_QUEUE, key=KVK_MESSAGE_KEY),
             call.messagedriven_service(SERVICEDEFINITION, "Message")
         ])
 
