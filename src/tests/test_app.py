@@ -1,5 +1,4 @@
 from unittest import TestCase
-
 from unittest.mock import MagicMock, call, patch
 
 from gobmessage.app import HR_MESSAGE_KEY, HR_MESSAGE_QUEUE, MESSAGE_EXCHANGE, SERVICEDEFINITION, get_app, run, \
@@ -26,8 +25,6 @@ class TestApp(TestCase):
         mock_messagedriven_service.side_effect = Exception
         run_message_thread()
 
-
-
     @patch("gobmessage.app.Thread")
     @patch("gobmessage.app.get_flask_app")
     def test_get_app(self, mock_flask_app, mock_thread):
@@ -37,9 +34,11 @@ class TestApp(TestCase):
         mock_thread().start.assert_called_once()
 
     @patch("gobmessage.app.GOB_MESSAGE_PORT", 1234)
+    @patch("gobmessage.app.connect")
     @patch("gobmessage.app.get_app")
-    def test_run(self, mock_get_app):
+    def test_run(self, mock_get_app, mock_connect):
         mock_app = MagicMock()
         mock_get_app.return_value = mock_app
         run()
         mock_app.run.assert_called_with(port=1234)
+        mock_connect.assert_called_once()

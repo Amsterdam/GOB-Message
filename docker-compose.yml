@@ -19,6 +19,26 @@ services:
       HR_KEYFILE: /app/${HR_KEYFILE}
       HR_CERTFILE: /app/${HR_CERTFILE}
       KVK_DATASERVICE_ADDRESS: ${KVK_DATASERVICE_ADDRESS}
+      GOB_SHARED_DIR: /app/shared
+    volumes:
+      - gob-volume:/app/shared
+
+  message_database:
+    image: amsterdam/postgres11
+    ports:
+      - "5411:5432"
+    container_name: message_database
+    environment:
+      POSTGRES_PASSWORD: insecure
+      POSTGRES_DB: gob_message
+      POSTGRES_USER: gob_message
+    volumes:
+      - "~/.ssh/datapunt.key:/root/.ssh/datapunt.key"
+    shm_size: '1gb'
+
+volumes:
+  gob-volume:
+    external: true
 
 networks:
   default:

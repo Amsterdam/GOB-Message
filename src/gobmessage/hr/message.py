@@ -1,6 +1,9 @@
 from xml.etree import ElementTree
+
 from zeep import ns
 
+from gobmessage.database.repository import KvkUpdateMessages
+from gobmessage.database.session import DatabaseSession
 from gobmessage.hr.kvk_dataservice.service import KvkDataService
 
 
@@ -54,22 +57,21 @@ def hr_message_handler(msg: dict):
     :param msg:
     :return:
     """
-    message = KvkUpdateBericht(msg['contents'])
-
-    kvk = message.get_kvk_nummer()
-    vestigingsnummer = message.get_vestigingsnummer()
+    message_id = msg['message_id']
+    with DatabaseSession() as session:
+        message = KvkUpdateMessages(session).get(message_id)
 
     service = KvkDataService()
 
-    if kvk:
-        inschrijving = service.ophalen_inschrijving_by_kvk_nummer(kvk)
+    if message.kvk_nummer:
+        inschrijving = service.ophalen_inschrijving_by_kvk_nummer(message.kvk_nummer)
         print("INSCHRIJVING")
         print(inschrijving)
     else:
         print("No new data retrieved because 'KvK nummer' was not found in the received message")
 
-    if vestigingsnummer:
-        vestiging = service.ophalen_vestiging_by_vestigingsnummer(vestigingsnummer)
+    if message.vestigingsnummer:
+        vestiging = service.ophalen_vestiging_by_vestigingsnummer(message.vestigingsnummer)
         print("VESTIGING")
         print(vestiging)
     else:
