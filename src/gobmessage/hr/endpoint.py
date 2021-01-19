@@ -1,11 +1,26 @@
-from flask import request, Response
+from flask import Response, request
 from gobcore.message_broker import publish
-from gobmessage.config import MESSAGE_EXCHANGE, HR_MESSAGE_KEY
+
+from gobmessage.config import HR_MESSAGE_KEY, MESSAGE_EXCHANGE
+from gobmessage.database.model import KvkUpdateMessage
+from gobmessage.database.repository import KvkUpdateMessages
+from gobmessage.database.session import DatabaseSession
+from gobmessage.hr.message import KvkUpdateBericht
 
 
 def hr_endpoint():
     request_data = request.data.decode('utf-8')
 
-    publish(MESSAGE_EXCHANGE, HR_MESSAGE_KEY, {'contents': request_data})
+    kvk_bericht = KvkUpdateBericht(request_data)
+
+    message = KvkUpdateMessage()
+    message.message = request_data
+    message.kvk_nummer = kvk_bericht.get_kvk_nummer()
+    message.vestigingsnummer = kvk_bericht.get_vestigingsnummer()
+
+    with DatabaseSession() as session:
+        message = KvkUpdateMessages(session).save(message)
+
+        publish(MESSAGE_EXCHANGE, HR_MESSAGE_KEY, {'message_id': message.id})
 
     return Response('OK. Message received. Thank you, good bye.')
