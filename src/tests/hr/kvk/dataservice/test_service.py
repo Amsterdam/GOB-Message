@@ -3,18 +3,18 @@ import freezegun
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-from gobmessage.hr.kvk_dataservice.service import KvkDataService
+from gobmessage.hr.kvk.dataservice.service import KvkDataService
 
 
 class TestKvkDataService(TestCase):
 
-    @patch("gobmessage.hr.kvk_dataservice.service.HR_CERTFILE", 'certfile.crt')
-    @patch("gobmessage.hr.kvk_dataservice.service.HR_KEYFILE", 'keyfile.key')
-    @patch("gobmessage.hr.kvk_dataservice.service.KVK_DATASERVICE_ADDRESS", 'https://kvkdataservice')
-    @patch("gobmessage.hr.kvk_dataservice.service.requests.Session")
-    @patch("gobmessage.hr.kvk_dataservice.service.Transport")
-    @patch("gobmessage.hr.kvk_dataservice.service.Client")
-    @patch("gobmessage.hr.kvk_dataservice.service.KvkDataServiceBinarySignature")
+    @patch("gobmessage.hr.kvk.dataservice.service.HR_CERTFILE", 'certfile.crt')
+    @patch("gobmessage.hr.kvk.dataservice.service.HR_KEYFILE", 'keyfile.key')
+    @patch("gobmessage.hr.kvk.dataservice.service.KVK_DATASERVICE_ADDRESS", 'https://kvkdataservice')
+    @patch("gobmessage.hr.kvk.dataservice.service.requests.Session")
+    @patch("gobmessage.hr.kvk.dataservice.service.Transport")
+    @patch("gobmessage.hr.kvk.dataservice.service.Client")
+    @patch("gobmessage.hr.kvk.dataservice.service.KvkDataServiceBinarySignature")
     def test_get_client(self, mock_signature, mock_client, mock_transport, mock_session):
         service = KvkDataService()
         mock_client.return_value.service._binding_options = {}

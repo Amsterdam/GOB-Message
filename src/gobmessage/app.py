@@ -5,15 +5,15 @@ from gobcore.message_broker.initialise_queues import create_queue_with_binding
 from gobcore.message_broker.messagedriven_service import messagedriven_service
 
 from gobmessage.api import get_flask_app
-from gobmessage.config import GOB_MESSAGE_PORT, HR_MESSAGE_KEY, HR_MESSAGE_QUEUE, MESSAGE_EXCHANGE
+from gobmessage.config import GOB_MESSAGE_PORT, KVK_MESSAGE_KEY, KVK_MESSAGE_QUEUE, MESSAGE_EXCHANGE
 from gobmessage.database.connection import connect
-from gobmessage.hr.message import hr_message_handler
+from gobmessage.hr.kvk.message import kvk_message_handler
 
 SERVICEDEFINITION = {
-    'hr_message': {
+    'kvk_message': {
         'exchange': MESSAGE_EXCHANGE,
-        'queue': HR_MESSAGE_QUEUE,
-        'handler': hr_message_handler
+        'queue': KVK_MESSAGE_QUEUE,
+        'handler': kvk_message_handler
     }
 }
 
@@ -21,7 +21,7 @@ SERVICEDEFINITION = {
 def run_message_thread():
     try:
         # First create queue and binding if not exists yet
-        create_queue_with_binding(exchange=MESSAGE_EXCHANGE, queue=HR_MESSAGE_QUEUE, key=HR_MESSAGE_KEY)
+        create_queue_with_binding(exchange=MESSAGE_EXCHANGE, queue=KVK_MESSAGE_QUEUE, key=KVK_MESSAGE_KEY)
         messagedriven_service(SERVICEDEFINITION, "Message")
     except:  # noqa: E722 do not use bare 'except'
         pass
