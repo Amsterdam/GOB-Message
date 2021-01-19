@@ -5,13 +5,13 @@ from zeep import ns
 from unittest import TestCase
 from unittest.mock import MagicMock, patch, call
 
-from gobmessage.hr.kvk_dataservice.binary_signature import KvkDataServiceBinarySignature
+from gobmessage.hr.kvk.dataservice.binary_signature import KvkDataServiceBinarySignature
 
 
 @patch("builtins.open", MagicMock())  # To avoid loading non-existing certificates in the tests
 class TestKvkDataServiceBinarySignature(TestCase):
 
-    @patch("gobmessage.hr.kvk_dataservice.binary_signature.utils")
+    @patch("gobmessage.hr.kvk.dataservice.binary_signature.utils")
     def test_add_timestamp(self, mock_utils):
         signature = KvkDataServiceBinarySignature('key', 'cert')
 
@@ -31,7 +31,7 @@ class TestKvkDataServiceBinarySignature(TestCase):
             call.WSU('Timestamp').append(mock_utils.WSU()),
         ])
 
-    @patch("gobmessage.hr.kvk_dataservice.binary_signature.utils")
+    @patch("gobmessage.hr.kvk.dataservice.binary_signature.utils")
     def test_fix_wsa_headers(self, mock_utils):
         signature = KvkDataServiceBinarySignature('key', 'cert')
         mock_utils.get_or_create_header = MagicMock()
@@ -56,12 +56,12 @@ class TestKvkDataServiceBinarySignature(TestCase):
         self.assertEqual('http://es.kvk.nl/kvk-dataservicePP/2015/02', to_elm.text)
         self.assertEqual('uuid:the-message-id', message_id_elm.text)
 
-    @patch("gobmessage.hr.kvk_dataservice.binary_signature._make_sign_key")
-    @patch("gobmessage.hr.kvk_dataservice.binary_signature._sign_envelope_with_key_binary")
-    @patch("gobmessage.hr.kvk_dataservice.binary_signature.xmlsec.SignatureContext")
-    @patch("gobmessage.hr.kvk_dataservice.binary_signature.detect_soap_env")
-    @patch("gobmessage.hr.kvk_dataservice.binary_signature._sign_node")
-    @patch("gobmessage.hr.kvk_dataservice.binary_signature.QName", lambda ns, elm: f"{ns}:{elm}")
+    @patch("gobmessage.hr.kvk.dataservice.binary_signature._make_sign_key")
+    @patch("gobmessage.hr.kvk.dataservice.binary_signature._sign_envelope_with_key_binary")
+    @patch("gobmessage.hr.kvk.dataservice.binary_signature.xmlsec.SignatureContext")
+    @patch("gobmessage.hr.kvk.dataservice.binary_signature.detect_soap_env")
+    @patch("gobmessage.hr.kvk.dataservice.binary_signature._sign_node")
+    @patch("gobmessage.hr.kvk.dataservice.binary_signature.QName", lambda ns, elm: f"{ns}:{elm}")
     def test_sign_envelope(self,
                            mock_sign_node,
                            mock_detect_soap_env,

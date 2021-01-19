@@ -1,10 +1,10 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from gobmessage.hr.kvk_dataservice.update_bericht import KvkUpdateBericht
+from gobmessage.hr.kvk.dataservice.update_bericht import KvkUpdateBericht
 
 
-@patch("gobmessage.hr.kvk_dataservice.update_bericht.ElementTree", MagicMock())
+@patch("gobmessage.hr.kvk.dataservice.update_bericht.ElementTree", MagicMock())
 class TestKvkUpdateBericht(TestCase):
 
     def test_get_methods(self):

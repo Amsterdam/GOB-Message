@@ -1,9 +1,9 @@
 from gobmessage.database.repository import KvkUpdateMessages
 from gobmessage.database.session import DatabaseSession
-from gobmessage.hr.kvk_dataservice.service import KvkDataService
+from gobmessage.hr.kvk.dataservice.service import KvkDataService
 
 
-def hr_message_handler(msg: dict):
+def kvk_message_handler(msg: dict):
     """Message handler for message queue
 
     :param msg:
