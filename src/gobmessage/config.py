@@ -27,3 +27,12 @@ HR_MESSAGE_KEY = f"message.mutation.hr"
 HR_KEYFILE = _getenv("HR_KEYFILE", is_optional=True)
 HR_CERTFILE = _getenv("HR_CERTFILE", is_optional=True)
 KVK_DATASERVICE_ADDRESS = _getenv("KVK_DATASERVICE_ADDRESS", is_optional=True)
+
+DATABASE_CONFIG = {
+    'drivername': 'postgres',
+    'username': os.getenv("GOB_MESSAGE_DATABASE_USER", "gob_message"),
+    'password': os.getenv("GOB_MESSAGE_DATABASE_PASSWORD", "insecure"),
+    'host': os.getenv("GOB_MESSAGE_DATABASE_HOST", "localhost"),
+    'port': os.getenv("GOB_MESSAGE_DATABASE_PORT", 5411),
+    'database': os.getenv("GOB_MESSAGE_DATABASE", 'gob_message'),
+}

@@ -45,32 +45,33 @@ class TestKvkUpdateBericht(TestCase):
 
 class TestMessage(TestCase):
 
+    @patch("gobmessage.hr.message.DatabaseSession")
     @patch("gobmessage.hr.message.KvkDataService")
-    @patch("gobmessage.hr.message.KvkUpdateBericht")
+    @patch("gobmessage.hr.message.KvkUpdateMessages")
     @patch("builtins.print")
-    def test_hr_message_handler(self, mock_print, mock_bericht, mock_data_service):
-        hr_message_handler({'contents': 'message'})
+    def test_hr_message_handler(self, mock_print, mock_messages, mock_data_service, mock_session):
+        mocked_message = MagicMock()
+        mock_messages.return_value.get.return_value = mocked_message
 
-        mock_bericht.assert_called_with('message')
-        mock_data_service().ophalen_inschrijving_by_kvk_nummer.assert_called_with(mock_bericht().get_kvk_nummer())
-        mock_data_service().ophalen_vestiging_by_vestigingsnummer.assert_called_with(
-            mock_bericht().get_vestigingsnummer())
+        # Case with kvk nummer and vestigingsnummer
+        hr_message_handler({'message_id': 42})
 
+        mock_data_service().ophalen_inschrijving_by_kvk_nummer.assert_called_with(mocked_message.kvk_nummer)
+        mock_data_service().ophalen_vestiging_by_vestigingsnummer.assert_called_with(mocked_message.vestigingsnummer)
         mock_print.assert_has_calls([
             call("INSCHRIJVING"),
             call(mock_data_service().ophalen_inschrijving_by_kvk_nummer()),
             call("VESTIGING"),
             call(mock_data_service().ophalen_vestiging_by_vestigingsnummer()),
         ])
+        mock_messages.assert_called_with(mock_session.return_value.__enter__.return_value)
+        mock_messages.return_value.get.assert_called_with(42)
 
-    @patch("gobmessage.hr.message.KvkDataService")
-    @patch("gobmessage.hr.message.KvkUpdateBericht")
-    @patch("builtins.print")
-    def test_hr_message_handler_no_results(self, mock_print, mock_bericht, mock_data_service):
-        mocked_bericht = mock_bericht.return_value
-        mocked_bericht.get_kvk_nummer.return_value = None
-        mocked_bericht.get_vestigingsnummer.return_value = None
-        hr_message_handler({'contents': 'message'})
+        # Case without kvk nummer and vestigingsnummer
+        mocked_message.kvk_nummer = None
+        mocked_message.vestigingsnummer = None
+
+        hr_message_handler({'message_id': 42})
 
         mock_print.assert_has_calls([
             call("No new data retrieved because 'KvK nummer' was not found in the received message"),

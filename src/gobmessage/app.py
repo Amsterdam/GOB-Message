@@ -1,15 +1,13 @@
 import os
-
 from threading import Thread
 
 from gobcore.message_broker.initialise_queues import create_queue_with_binding
 from gobcore.message_broker.messagedriven_service import messagedriven_service
 
 from gobmessage.api import get_flask_app
-from gobmessage.config import GOB_MESSAGE_PORT
-from gobmessage.config import MESSAGE_EXCHANGE, HR_MESSAGE_QUEUE, HR_MESSAGE_KEY
+from gobmessage.config import GOB_MESSAGE_PORT, HR_MESSAGE_KEY, HR_MESSAGE_QUEUE, MESSAGE_EXCHANGE
+from gobmessage.database.connection import connect
 from gobmessage.hr.message import hr_message_handler
-
 
 SERVICEDEFINITION = {
     'hr_message': {
@@ -45,5 +43,6 @@ def run():
 
     :return: None
     """
+    connect()
     app = get_app()
     app.run(port=GOB_MESSAGE_PORT)
