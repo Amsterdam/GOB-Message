@@ -22,6 +22,8 @@ API_BASE_PATH = os.getenv("BASE_PATH", default="")
 MESSAGE_EXCHANGE = "gob.message"
 KVK_MESSAGE_QUEUE = f"{MESSAGE_EXCHANGE}.kvk"
 KVK_MESSAGE_KEY = f"message.mutation.kvk"
+UPDATE_OBJECT_COMPLETE_QUEUE = f"{MESSAGE_EXCHANGE}.complete"
+UPDATE_OBJECT_COMPLETE_KEY = "update_object.complete"
 
 # Optional parameters
 HR_KEYFILE = _getenv("HR_KEYFILE", is_optional=True)

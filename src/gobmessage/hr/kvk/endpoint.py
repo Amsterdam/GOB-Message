@@ -3,7 +3,7 @@ from gobcore.message_broker import publish
 
 from gobmessage.config import KVK_MESSAGE_KEY, MESSAGE_EXCHANGE
 from gobmessage.database.model import KvkUpdateMessage
-from gobmessage.database.repository import KvkUpdateMessages
+from gobmessage.database.repository import KvkUpdateMessageRepository
 from gobmessage.database.session import DatabaseSession
 from gobmessage.hr.kvk.dataservice.update_bericht import KvkUpdateBericht
 
@@ -19,7 +19,7 @@ def kvk_endpoint():
     message.vestigingsnummer = kvk_bericht.get_vestigingsnummer()
 
     with DatabaseSession() as session:
-        message = KvkUpdateMessages(session).save(message)
+        message = KvkUpdateMessageRepository(session).save(message)
 
         publish(MESSAGE_EXCHANGE, KVK_MESSAGE_KEY, {'message_id': message.id})
 
