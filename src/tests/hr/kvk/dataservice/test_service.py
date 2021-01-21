@@ -37,7 +37,8 @@ class TestKvkDataService(TestCase):
         with freezegun.freeze_time('2020-09-01 19:00:03'):
             self.assertEqual('GOB-20200901190003000000', service._generate_reference())
 
-    def test_make_request(self):
+    @patch("gobmessage.hr.kvk.dataservice.service.serialize_object")
+    def test_make_request(self, mock_serialize):
         service = KvkDataService()
         service._get_client = MagicMock()
         service._generate_reference = MagicMock()
@@ -49,7 +50,8 @@ class TestKvkDataService(TestCase):
             kwarg1='value1',
             kwarg2='value2'
         )
-        self.assertEqual(service._get_client().service.someAction(), res)
+        mock_serialize.assert_called_with(service._get_client().service.someAction())
+        self.assertEqual(mock_serialize.return_value, res)
 
     def test_request_methods(self):
         testcases = [
