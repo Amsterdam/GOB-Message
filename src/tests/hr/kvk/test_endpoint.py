@@ -7,11 +7,11 @@ from gobmessage.hr.kvk.endpoint import kvk_endpoint, MESSAGE_EXCHANGE, KVK_MESSA
 class TestEndpoint(TestCase):
 
     @patch("gobmessage.hr.kvk.endpoint.DatabaseSession")
-    @patch("gobmessage.hr.kvk.endpoint.KvkUpdateMessages")
+    @patch("gobmessage.hr.kvk.endpoint.KvkUpdateMessageRepository")
     @patch("gobmessage.hr.kvk.endpoint.KvkUpdateMessage")
     @patch("gobmessage.hr.kvk.endpoint.KvkUpdateBericht")
     @patch("gobmessage.hr.kvk.endpoint.Response", lambda x: x)
-    def test_kvk_endpoint(self, mock_bericht, mock_message, mock_messages, mock_session):
+    def test_kvk_endpoint(self, mock_bericht, mock_message, mock_repo, mock_session):
         mock_request = MagicMock()
         mock_request.data = b'Some data'
         mock_publish = MagicMock()
@@ -29,7 +29,7 @@ class TestEndpoint(TestCase):
             self.assertEqual(mock_bericht_rv.get_vestigingsnummer.return_value, mock_message_rv.vestigingsnummer)
             self.assertEqual('Some data', mock_message_rv.message)
 
-            mock_messages.assert_called_with(mock_session().__enter__())
-            mock_messages.return_value.save.assert_called_with(mock_message_rv)
+            mock_repo.assert_called_with(mock_session().__enter__())
+            mock_repo.return_value.save.assert_called_with(mock_message_rv)
 
-            mock_publish.assert_called_with(MESSAGE_EXCHANGE, KVK_MESSAGE_KEY, {'message_id': mock_messages.return_value.save.return_value.id})
+            mock_publish.assert_called_with(MESSAGE_EXCHANGE, KVK_MESSAGE_KEY, {'message_id': mock_repo.return_value.save.return_value.id})

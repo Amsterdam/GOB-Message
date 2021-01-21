@@ -3,6 +3,7 @@ from datetime import datetime
 from zeep import Client
 from zeep.transports import Transport
 
+from zeep.helpers import serialize_object
 from gobmessage.config import HR_KEYFILE, HR_CERTFILE, KVK_DATASERVICE_ADDRESS
 from gobmessage.hr.kvk.dataservice.binary_signature import KvkDataServiceBinarySignature
 
@@ -56,7 +57,7 @@ class KvkDataService:
 
         # Strict mode is not supported by KvK DataService
         with client.settings(strict=False):
-            return getattr(client.service, action)(**request_data)
+            return serialize_object(getattr(client.service, action)(**request_data))
 
     def ophalen_inschrijving_by_kvk_nummer(self, kvk_nummer):
         return self._make_request('ophalenInschrijving', kvkNummer=kvk_nummer)
