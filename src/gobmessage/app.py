@@ -66,6 +66,7 @@ def get_app():
     t = Thread(target=run_message_thread)
     t.start()
 
+    connect()
     return get_flask_app()
 
 
@@ -75,6 +76,5 @@ def run():
 
     :return: None
     """
-    connect()
     app = get_app()
     app.run(port=GOB_MESSAGE_PORT)

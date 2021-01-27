@@ -50,20 +50,20 @@ class TestApp(TestCase):
         mock_messagedriven_service.side_effect = Exception
         run_message_thread()
 
+    @patch("gobmessage.app.connect")
     @patch("gobmessage.app.Thread")
     @patch("gobmessage.app.get_flask_app")
-    def test_get_app(self, mock_flask_app, mock_thread):
+    def test_get_app(self, mock_flask_app, mock_thread, mock_connect):
         self.assertEqual(mock_flask_app(), get_app())
 
         mock_thread.assert_called_with(target=run_message_thread)
         mock_thread().start.assert_called_once()
+        mock_connect.assert_called_once()
 
     @patch("gobmessage.app.GOB_MESSAGE_PORT", 1234)
-    @patch("gobmessage.app.connect")
     @patch("gobmessage.app.get_app")
-    def test_run(self, mock_get_app, mock_connect):
+    def test_run(self, mock_get_app):
         mock_app = MagicMock()
         mock_get_app.return_value = mock_app
         run()
         mock_app.run.assert_called_with(port=1234)
-        mock_connect.assert_called_once()
