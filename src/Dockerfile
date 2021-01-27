@@ -30,6 +30,10 @@ RUN mkdir -p /certs/gob/ && chmod -R 755 /certs
 # Copy gobmessage module
 COPY gobmessage gobmessage
 
+# Copy alembic config
+COPY alembic alembic
+COPY alembic.ini alembic.ini
+
 USER datapunt
 
 CMD uwsgi
