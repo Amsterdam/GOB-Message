@@ -75,6 +75,67 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                         'www3.kvk.nl'
                     ]
                 },
+                'manifesteertZichAls': {
+                    'extraElementen': None,
+                    'relatieRegistratie': {
+                        'datumAanvang': '20181101',
+                        'datumEinde': None,
+                        'soortMutatie': None,
+                        'registratieTijdstip': '20181101162418910',
+                        'registratieTijdstipNoValue': None
+                    },
+                    'onderneming': {
+                        'extraElementen': None,
+                        'registratie': {
+                            'datumAanvang': '20181101',
+                            'datumEinde': None,
+                            'soortMutatie': None,
+                            'registratieTijdstip': '20181101162418910',
+                            'registratieTijdstipNoValue': None
+                        },
+                        'kvkNummer': '90004213',
+                        'voltijdWerkzamePersonen': 12,
+                        'deeltijdWerkzamePersonen': 4,
+                        'totaalWerkzamePersonen': 16,
+                        'handeltOnder': [
+                            {
+                                'extraElementen': None,
+                                'relatieRegistratie': None,
+                                'handelsnaam': {
+                                    'extraElementen': None,
+                                    'registratie': {
+                                        'datumAanvang': '20181101',
+                                        'datumEinde': None,
+                                        'soortMutatie': None,
+                                        'registratieTijdstip': '20181101162418910',
+                                        'registratieTijdstipNoValue': None
+                                    },
+                                    'naam': 'Handelsnaam 1',
+                                    'volgorde': 0
+                                }
+                            },
+                            {
+                                'extraElementen': None,
+                                'relatieRegistratie': None,
+                                'handelsnaam': {
+                                    'extraElementen': None,
+                                    'registratie': {
+                                        'datumAanvang': '20181101',
+                                        'datumEinde': None,
+                                        'soortMutatie': None,
+                                        'registratieTijdstip': '20181101162418910',
+                                        'registratieTijdstipNoValue': None
+                                    },
+                                    'naam': 'Handelsnaam 2',
+                                    'volgorde': 1
+                                }
+                            }
+                        ],
+                        'isEenManifestatieVan': None,
+                        'isOvergenomenVan': None,
+                        'isOvergedragenNaar': None
+                    }
+                },
             }
         }
         m = MaatschappelijkeActiviteitenMapper()
@@ -98,7 +159,26 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                 {'naam': 'www1.kvk.nl'},
                 {'naam': 'www2.kvk.nl'},
                 {'naam': 'www3.kvk.nl'},
-            ]
+            ],
+            'registratie_tijdstip_onderneming': '2018-11-01T16:24:18.910000',
+            'datum_aanvang_onderneming': '2018-11-01',
+            'datum_einde_onderneming': None,
+            'totaal_werkzame_personen': 16,
+            'voltijd_werkzame_personen': 12,
+            'deeltijd_werkzame_personen': 4,
+            'handelt_onder_handelsnamen': [{
+                'datum_aanvang_handelsnaam': '2018-11-01',
+                'datum_einde_handelsnaam': None,
+                'omschrijving': 'Handelsnaam 1',
+                'tijdstip_registratie': '2018-11-01T16:24:18.910000',
+                'volgorde': 0
+            }, {
+                'datum_aanvang_handelsnaam': '2018-11-01',
+                'datum_einde_handelsnaam': None,
+                'omschrijving': 'Handelsnaam 2',
+                'tijdstip_registratie': '2018-11-01T16:24:18.910000',
+                'volgorde': 1
+            }],
         }
         self.assertEqual(expected, m.map(source))
 
