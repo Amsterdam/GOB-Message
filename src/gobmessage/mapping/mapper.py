@@ -39,7 +39,10 @@ class Mapper(ABC):
 
         result = {}
         for field_name, source_field in self.fields.items():
-            result[field_name] = get_value(source, source_field)
+            if isinstance(source_field, tuple):
+                result[field_name] = source_field[0](get_value(source, source_field[1]))
+            else:
+                result[field_name] = get_value(source, source_field)
         return result
 
     def get_id(self, mapped_entity: dict) -> str:

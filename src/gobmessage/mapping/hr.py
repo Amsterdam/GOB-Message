@@ -1,4 +1,5 @@
 from gobmessage.mapping.mapper import Mapper
+from gobmessage.mapping.value_converter import ValueConverter
 
 
 class MaatschappelijkeActiviteitenMapper(Mapper):
@@ -10,4 +11,24 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
     fields = {
         'kvknummer': 'maatschappelijkeActiviteit.kvkNummer',
         'naam': 'maatschappelijkeActiviteit.naam',
+        'non_mailing': (
+            ValueConverter.jn_to_bool,
+            'maatschappelijkeActiviteit.nonMailing.code'
+        ),
+        'datum_aanvang_maatschappelijke_activiteit': (
+            ValueConverter.to_date,
+            'maatschappelijkeActiviteit.registratie.datumAanvang'
+        ),
+        'datum_einde_maatschappelijke_activiteit': (
+            ValueConverter.to_date,
+            'maatschappelijkeActiviteit.registratie.datumEinde'
+        ),
+        'registratie_tijdstip_maatschappelijke_activiteit': (
+            ValueConverter.to_datetime,
+            'maatschappelijkeActiviteit.registratie.registratieTijdstip'
+        ),
+        'incidenteel_uitlenen_arbeidskrachten': (
+            ValueConverter.jn_to_bool,
+            'maatschappelijkeActiviteit.incidenteelUitlenenArbeidskrachten.code'
+        ),
     }

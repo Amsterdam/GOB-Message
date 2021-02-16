@@ -8,46 +8,45 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
 
     """
 
-    def test_map(self):
-        """Tests parent method from Mapper
+    def test_map_mac(self):
+        """Integration test
 
         :return:
         """
         source = {
-            'a': {
-                'b': 'AB',
-                'c': {
-                    'd': 'ACD',
+            'maatschappelijkeActiviteit': {
+                'registratie': {
+                    'datumAanvang': '20181101',
+                    'datumEinde': None,
+                    'soortMutatie': None,
+                    'registratieTijdstip': '20181101162418910',
+                    'registratieTijdstipNoValue': None
                 },
-            },
-            'e': 'E',
+                'kvkNummer': '123456789',
+                'nonMailing': {
+                    'code': 'N',
+                    'omschrijving': 'Nee',
+                    'referentieType': 'geenRT'
+                },
+                'incidenteelUitlenenArbeidskrachten': {
+                    'code': 'J',
+                    'omschrijving': 'Ja',
+                    'referentieType': 'geenRT'
+                },
+                'naam': 'Gemeente Amsterdam',
+            }
         }
-
         m = MaatschappelijkeActiviteitenMapper()
-        m.fields = {
-            'field 1': 'a.c.d',
-            'field 2': 'a.b',
-            'field 3': 'e',
-            'field 4': 'e.f',
-        }
-
         expected = {
-            'field 1': 'ACD',
-            'field 2': 'AB',
-            'field 3': 'E',
-            'field 4': None,
+            'kvknummer': '123456789',
+            'naam': 'Gemeente Amsterdam',
+            'non_mailing': False,
+            'datum_aanvang_maatschappelijke_activiteit': '2018-11-01',
+            'datum_einde_maatschappelijke_activiteit': None,
+            'registratie_tijdstip_maatschappelijke_activiteit': '2018-11-01T16:24:18.910000',
+            'incidenteel_uitlenen_arbeidskrachten': True,
         }
-
         self.assertEqual(expected, m.map(source))
-
-    def test_get_id(self):
-        """Tests parent method from Mapper
-
-        :return:
-        """
-        e = MaatschappelijkeActiviteitenMapper()
-        e.entity_id = 'entity_id'
-        self.assertEqual('the id', e.get_id({'entity_id': 'the id'}))
 
     def test_properties(self):
         """Tests properties present and set
@@ -57,4 +56,6 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
         props = ['catalogue', 'collection', 'entity_id', 'version', 'fields']
 
         for prop in props:
-            self.assertTrue(hasattr(MaatschappelijkeActiviteitenMapper, prop) and getattr(MaatschappelijkeActiviteitenMapper, prop))
+            self.assertTrue(
+                hasattr(MaatschappelijkeActiviteitenMapper, prop) and getattr(MaatschappelijkeActiviteitenMapper,
+                                                                              prop))
