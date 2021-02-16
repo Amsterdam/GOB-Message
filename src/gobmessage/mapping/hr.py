@@ -31,4 +31,21 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             ValueConverter.jn_to_bool,
             'maatschappelijkeActiviteit.incidenteelUitlenenArbeidskrachten.code'
         ),
+        'communicatienummer': {
+            '_base': 'maatschappelijkeActiviteit.communicatiegegevens.communicatienummer',
+            '_list': True,
+            'nummer': 'nummer',
+            'toegangscode': 'toegangscode',
+            'soort': 'soort.omschrijving',
+        },
+        'email_adres': {
+            '_base': 'maatschappelijkeActiviteit.communicatiegegevens.emailAdres',
+            '_list': True,
+            'adres': '.',
+        },
+        'domeinnaam': {
+            '_base': 'maatschappelijkeActiviteit.communicatiegegevens.domeinNaam',
+            '_list': True,
+            'naam': '.',
+        }
     }
