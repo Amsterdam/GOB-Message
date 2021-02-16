@@ -47,5 +47,32 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             '_base': 'maatschappelijkeActiviteit.communicatiegegevens.domeinNaam',
             '_list': True,
             'naam': '.',
-        }
+        },
+        'registratie_tijdstip_onderneming': (
+            ValueConverter.to_datetime,
+            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.registratie.registratieTijdstip'
+        ),
+        'datum_aanvang_onderneming': (
+            ValueConverter.to_date,
+            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.registratie.datumAanvang'
+        ),
+        'datum_einde_onderneming': (
+            ValueConverter.to_date,
+            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.registratie.datumEinde'
+        ),
+        'totaal_werkzame_personen':
+            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.totaalWerkzamePersonen',
+        'voltijd_werkzame_personen':
+            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.voltijdWerkzamePersonen',
+        'deeltijd_werkzame_personen':
+            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.deeltijdWerkzamePersonen',
+        'handelt_onder_handelsnamen': {
+            '_base': 'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.handeltOnder',
+            '_list': True,
+            'omschrijving': 'handelsnaam.naam',
+            'tijdstip_registratie': (ValueConverter.to_datetime, 'handelsnaam.registratie.registratieTijdstip'),
+            'datum_aanvang_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumAanvang'),
+            'datum_einde_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumEinde'),
+            'volgorde': 'handelsnaam.volgorde',
+        },
     }
