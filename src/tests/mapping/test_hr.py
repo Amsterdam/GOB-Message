@@ -49,6 +49,34 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                     'omschrijving': 'Ja',
                     'referentieType': 'geenRT'
                 },
+                'wordtUitgeoefendIn': [
+                    {
+                        'extraElementen': None,
+                        'relatieRegistratie': {
+                            'datumAanvang': '20181101',
+                            'datumEinde': None,
+                            'soortMutatie': None,
+                            'registratieTijdstip': '20181101162418910',
+                            'registratieTijdstipNoValue': None
+                        },
+                        'nietCommercieleVestiging': {
+                            'vestigingsnummer': '12344450236',
+                        }
+                    },
+                    {
+                        'extraElementen': None,
+                        'relatieRegistratie': {
+                            'datumAanvang': '20181101',
+                            'datumEinde': None,
+                            'soortMutatie': None,
+                            'registratieTijdstip': '20181101162418910',
+                            'registratieTijdstipNoValue': None
+                        },
+                        'nietCommercieleVestiging': {
+                            'vestigingsnummer': '12344450237',
+                        }
+                    },
+                ],
                 'naam': 'Gemeente Amsterdam',
                 'communicatiegegevens': {
                     'extraElementen': None,
@@ -191,6 +219,34 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                                 }
                             }
                         ],
+                        'wordtUitgeoefendIn': [
+                            {
+                                'extraElementen': None,
+                                'relatieRegistratie': {
+                                    'datumAanvang': '20181101',
+                                    'datumEinde': None,
+                                    'soortMutatie': None,
+                                    'registratieTijdstip': '20181101162418910',
+                                    'registratieTijdstipNoValue': None
+                                },
+                                'commercieleVestiging': {
+                                    'vestigingsnummer': '12344450234',
+                                }
+                            },
+                            {
+                                'extraElementen': None,
+                                'relatieRegistratie': {
+                                    'datumAanvang': '20181101',
+                                    'datumEinde': None,
+                                    'soortMutatie': None,
+                                    'registratieTijdstip': '20181101162418910',
+                                    'registratieTijdstipNoValue': None
+                                },
+                                'commercieleVestiging': {
+                                    'vestigingsnummer': '12344450235',
+                                }
+                            },
+                        ],
                         'isEenManifestatieVan': None,
                         'isOvergenomenVan': None,
                         'isOvergedragenNaar': None
@@ -265,6 +321,15 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                 {'bronwaarde': '01133'},
                 {'bronwaarde': '01134'},
             ],
+            'wordt_uitgeoefend_in_commerciele_vestiging': [
+                {'bronwaarde': '12344450234'},
+                {'bronwaarde': '12344450235'},
+            ],
+            'wordt_uitgeoefend_in_niet_commerciele_vestiging': [
+                {'bronwaarde': '12344450236'},
+                {'bronwaarde': '12344450237'},
+            ],
+
         }
         self.assertEqual(expected, m.map(source))
 
