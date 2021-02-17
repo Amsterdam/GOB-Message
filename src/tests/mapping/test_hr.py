@@ -49,6 +49,12 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                     'omschrijving': 'Ja',
                     'referentieType': 'geenRT'
                 },
+                'bezoekLocatie': {
+                    'volledigAdres': 'Amstel 1 Amsterdam'
+                },
+                'postLocatie': {
+                    'volledigAdres': 'Amstel 1 Amsterdam'
+                },
                 'wordtUitgeoefendIn': [
                     {
                         'extraElementen': None,
@@ -329,7 +335,12 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                 {'bronwaarde': '12344450236'},
                 {'bronwaarde': '12344450237'},
             ],
-
+            'heeft_bezoekadres': {
+                'bronwaarde': 'Amstel 1 Amsterdam',
+            },
+            'heeft_postadres': {
+                'bronwaarde': 'Amstel 1 Amsterdam',
+            },
         }
         self.assertEqual(expected, m.map(source))
 
