@@ -4,6 +4,13 @@ from abc import ABC, abstractmethod
 def get_value(d: dict, key: str):
     if not isinstance(d, dict):
         return None
+    if '|' in key:
+        # Return first value that is not empty
+        for or_key in key.split('|'):
+            val = get_value(d, or_key)
+            if val:
+                return val
+        return None
     if "." in key:
         head, *tail = key.split('.')
         return get_value(d.get(head, {}), '.'.join(tail))
@@ -62,7 +69,7 @@ class Mapper(ABC):
                             for item in get_value(src, source_field['_base'])
                         ]
                     else:
-                        raise NotImplementedError("Not sure what you try to accomplish here.")
+                        result[field_name] = map(src, submapping)
 
                 else:
                     result[field_name] = get_value(src, source_field)

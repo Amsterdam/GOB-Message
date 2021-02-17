@@ -136,6 +136,21 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                         'isOvergedragenNaar': None
                     }
                 },
+                'wordtGeleidVanuit': {
+                    'extraElementen': None,
+                    'commercieleVestiging': None,
+                    'nietCommercieleVestiging': {
+                        'extraElementen': None,
+                        'registratie': {
+                            'datumAanvang': '20181101',
+                            'datumEinde': None,
+                            'soortMutatie': None,
+                            'registratieTijdstip': '20181101162418910',
+                            'registratieTijdstipNoValue': None
+                        },
+                        'vestigingsnummer': '123456789',
+                    },
+                },
             }
         }
         m = MaatschappelijkeActiviteitenMapper()
@@ -179,6 +194,9 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                 'tijdstip_registratie': '2018-11-01T16:24:18.910000',
                 'volgorde': 1
             }],
+            'heeft_hoofdvestiging': {
+                'bronwaarde': '123456789'
+            }
         }
         self.assertEqual(expected, m.map(source))
 
