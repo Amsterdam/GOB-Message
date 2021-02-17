@@ -78,5 +78,15 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
         'heeft_hoofdvestiging': {
             'bronwaarde': 'maatschappelijkeActiviteit.wordtGeleidVanuit.commercieleVestiging.vestigingsnummer|'
                           'maatschappelijkeActiviteit.wordtGeleidVanuit.nietCommercieleVestiging.vestigingsnummer',
+        },
+        'heeft_sbi_activiteiten_voor_onderneming': {
+            '_list': True,
+            '_base': 'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.sbiActiviteit',
+            'bronwaarde': 'sbiCode.code',
+        },
+        'heeft_sbi_activiteiten_voor_maatschappelijke_activiteit': {
+            '_list': True,
+            '_base': 'maatschappelijkeActiviteit.sbiActiviteit',
+            'bronwaarde': 'sbiCode.code',
         }
     }
