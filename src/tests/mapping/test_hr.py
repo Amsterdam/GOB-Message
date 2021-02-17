@@ -23,6 +23,22 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                     'registratieTijdstipNoValue': None
                 },
                 'kvkNummer': '123456789',
+                'sbiActiviteit': [
+                    {
+                        'sbiCode': {
+                            'code': '01133',
+                            'omschrijving': 'Teelt van groenten in de volle grond',
+                            'referentieType': 'ActiviteitCode'
+                        },
+                    },
+                    {
+                        'sbiCode': {
+                            'code': '01134',
+                            'omschrijving': 'Teelt van groenten in de volle grond',
+                            'referentieType': 'ActiviteitCode'
+                        },
+                    }
+                ],
                 'nonMailing': {
                     'code': 'N',
                     'omschrijving': 'Nee',
@@ -94,6 +110,50 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                             'registratieTijdstipNoValue': None
                         },
                         'kvkNummer': '90004213',
+                        'sbiActiviteit': [
+                            {
+                                'extraElementen': None,
+                                'registratie': {
+                                    'datumAanvang': '20181101',
+                                    'datumEinde': None,
+                                    'soortMutatie': None,
+                                    'registratieTijdstip': '20181101162418910',
+                                    'registratieTijdstipNoValue': None
+                                },
+                                'sbiCode': {
+                                    'code': '01131',
+                                    'omschrijving': 'Teelt van groenten in de volle grond',
+                                    'referentieType': 'ActiviteitCode'
+                                },
+                                'isHoofdactiviteit': {
+                                    'code': 'J',
+                                    'omschrijving': 'Ja',
+                                    'referentieType': 'geenRT'
+                                },
+                                'volgorde': None
+                            },
+                            {
+                                'extraElementen': None,
+                                'registratie': {
+                                    'datumAanvang': '20181101',
+                                    'datumEinde': None,
+                                    'soortMutatie': None,
+                                    'registratieTijdstip': '20181101162418910',
+                                    'registratieTijdstipNoValue': None
+                                },
+                                'sbiCode': {
+                                    'code': '01132',
+                                    'omschrijving': 'Teelt van groenten in de volle grond',
+                                    'referentieType': 'ActiviteitCode'
+                                },
+                                'isHoofdactiviteit': {
+                                    'code': 'J',
+                                    'omschrijving': 'Ja',
+                                    'referentieType': 'geenRT'
+                                },
+                                'volgorde': None
+                            }
+                        ],
                         'voltijdWerkzamePersonen': 12,
                         'deeltijdWerkzamePersonen': 4,
                         'totaalWerkzamePersonen': 16,
@@ -196,7 +256,15 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
             }],
             'heeft_hoofdvestiging': {
                 'bronwaarde': '123456789'
-            }
+            },
+            'heeft_sbi_activiteiten_voor_onderneming': [
+                {'bronwaarde': '01131'},
+                {'bronwaarde': '01132'},
+            ],
+            'heeft_sbi_activiteiten_voor_maatschappelijke_activiteit': [
+                {'bronwaarde': '01133'},
+                {'bronwaarde': '01134'},
+            ],
         }
         self.assertEqual(expected, m.map(source))
 
