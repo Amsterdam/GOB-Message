@@ -75,4 +75,8 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             'datum_einde_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumEinde'),
             'volgorde': 'handelsnaam.volgorde',
         },
+        'heeft_hoofdvestiging': {
+            'bronwaarde': 'maatschappelijkeActiviteit.wordtGeleidVanuit.commercieleVestiging.vestigingsnummer|'
+                          'maatschappelijkeActiviteit.wordtGeleidVanuit.nietCommercieleVestiging.vestigingsnummer',
+        }
     }
