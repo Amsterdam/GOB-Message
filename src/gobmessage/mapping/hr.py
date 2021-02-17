@@ -98,6 +98,11 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             '_list': True,
             '_base': 'maatschappelijkeActiviteit.wordtUitgeoefendIn',
             'bronwaarde': 'nietCommercieleVestiging.vestigingsnummer',
-
-        }
+        },
+        'heeft_bezoekadres': {
+            'bronwaarde': 'maatschappelijkeActiviteit.bezoekLocatie.volledigAdres',
+        },
+        'heeft_postadres': {
+            'bronwaarde': 'maatschappelijkeActiviteit.postLocatie.volledigAdres',
+        },
     }
