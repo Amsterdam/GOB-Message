@@ -23,6 +23,22 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                     'registratieTijdstipNoValue': None
                 },
                 'kvkNummer': '123456789',
+                'sbiActiviteit': [
+                    {
+                        'sbiCode': {
+                            'code': '01133',
+                            'omschrijving': 'Teelt van groenten in de volle grond',
+                            'referentieType': 'ActiviteitCode'
+                        },
+                    },
+                    {
+                        'sbiCode': {
+                            'code': '01134',
+                            'omschrijving': 'Teelt van groenten in de volle grond',
+                            'referentieType': 'ActiviteitCode'
+                        },
+                    }
+                ],
                 'nonMailing': {
                     'code': 'N',
                     'omschrijving': 'Nee',
@@ -33,6 +49,40 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                     'omschrijving': 'Ja',
                     'referentieType': 'geenRT'
                 },
+                'bezoekLocatie': {
+                    'volledigAdres': 'Amstel 1 Amsterdam'
+                },
+                'postLocatie': {
+                    'volledigAdres': 'Amstel 1 Amsterdam'
+                },
+                'wordtUitgeoefendIn': [
+                    {
+                        'extraElementen': None,
+                        'relatieRegistratie': {
+                            'datumAanvang': '20181101',
+                            'datumEinde': None,
+                            'soortMutatie': None,
+                            'registratieTijdstip': '20181101162418910',
+                            'registratieTijdstipNoValue': None
+                        },
+                        'nietCommercieleVestiging': {
+                            'vestigingsnummer': '12344450236',
+                        }
+                    },
+                    {
+                        'extraElementen': None,
+                        'relatieRegistratie': {
+                            'datumAanvang': '20181101',
+                            'datumEinde': None,
+                            'soortMutatie': None,
+                            'registratieTijdstip': '20181101162418910',
+                            'registratieTijdstipNoValue': None
+                        },
+                        'nietCommercieleVestiging': {
+                            'vestigingsnummer': '12344450237',
+                        }
+                    },
+                ],
                 'naam': 'Gemeente Amsterdam',
                 'communicatiegegevens': {
                     'extraElementen': None,
@@ -94,6 +144,50 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                             'registratieTijdstipNoValue': None
                         },
                         'kvkNummer': '90004213',
+                        'sbiActiviteit': [
+                            {
+                                'extraElementen': None,
+                                'registratie': {
+                                    'datumAanvang': '20181101',
+                                    'datumEinde': None,
+                                    'soortMutatie': None,
+                                    'registratieTijdstip': '20181101162418910',
+                                    'registratieTijdstipNoValue': None
+                                },
+                                'sbiCode': {
+                                    'code': '01131',
+                                    'omschrijving': 'Teelt van groenten in de volle grond',
+                                    'referentieType': 'ActiviteitCode'
+                                },
+                                'isHoofdactiviteit': {
+                                    'code': 'J',
+                                    'omschrijving': 'Ja',
+                                    'referentieType': 'geenRT'
+                                },
+                                'volgorde': None
+                            },
+                            {
+                                'extraElementen': None,
+                                'registratie': {
+                                    'datumAanvang': '20181101',
+                                    'datumEinde': None,
+                                    'soortMutatie': None,
+                                    'registratieTijdstip': '20181101162418910',
+                                    'registratieTijdstipNoValue': None
+                                },
+                                'sbiCode': {
+                                    'code': '01132',
+                                    'omschrijving': 'Teelt van groenten in de volle grond',
+                                    'referentieType': 'ActiviteitCode'
+                                },
+                                'isHoofdactiviteit': {
+                                    'code': 'J',
+                                    'omschrijving': 'Ja',
+                                    'referentieType': 'geenRT'
+                                },
+                                'volgorde': None
+                            }
+                        ],
                         'voltijdWerkzamePersonen': 12,
                         'deeltijdWerkzamePersonen': 4,
                         'totaalWerkzamePersonen': 16,
@@ -131,10 +225,53 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                                 }
                             }
                         ],
+                        'wordtUitgeoefendIn': [
+                            {
+                                'extraElementen': None,
+                                'relatieRegistratie': {
+                                    'datumAanvang': '20181101',
+                                    'datumEinde': None,
+                                    'soortMutatie': None,
+                                    'registratieTijdstip': '20181101162418910',
+                                    'registratieTijdstipNoValue': None
+                                },
+                                'commercieleVestiging': {
+                                    'vestigingsnummer': '12344450234',
+                                }
+                            },
+                            {
+                                'extraElementen': None,
+                                'relatieRegistratie': {
+                                    'datumAanvang': '20181101',
+                                    'datumEinde': None,
+                                    'soortMutatie': None,
+                                    'registratieTijdstip': '20181101162418910',
+                                    'registratieTijdstipNoValue': None
+                                },
+                                'commercieleVestiging': {
+                                    'vestigingsnummer': '12344450235',
+                                }
+                            },
+                        ],
                         'isEenManifestatieVan': None,
                         'isOvergenomenVan': None,
                         'isOvergedragenNaar': None
                     }
+                },
+                'wordtGeleidVanuit': {
+                    'extraElementen': None,
+                    'commercieleVestiging': None,
+                    'nietCommercieleVestiging': {
+                        'extraElementen': None,
+                        'registratie': {
+                            'datumAanvang': '20181101',
+                            'datumEinde': None,
+                            'soortMutatie': None,
+                            'registratieTijdstip': '20181101162418910',
+                            'registratieTijdstipNoValue': None
+                        },
+                        'vestigingsnummer': '123456789',
+                    },
                 },
             }
         }
@@ -179,6 +316,31 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                 'tijdstip_registratie': '2018-11-01T16:24:18.910000',
                 'volgorde': 1
             }],
+            'heeft_hoofdvestiging': {
+                'bronwaarde': '123456789'
+            },
+            'heeft_sbi_activiteiten_voor_onderneming': [
+                {'bronwaarde': '01131'},
+                {'bronwaarde': '01132'},
+            ],
+            'heeft_sbi_activiteiten_voor_maatschappelijke_activiteit': [
+                {'bronwaarde': '01133'},
+                {'bronwaarde': '01134'},
+            ],
+            'wordt_uitgeoefend_in_commerciele_vestiging': [
+                {'bronwaarde': '12344450234'},
+                {'bronwaarde': '12344450235'},
+            ],
+            'wordt_uitgeoefend_in_niet_commerciele_vestiging': [
+                {'bronwaarde': '12344450236'},
+                {'bronwaarde': '12344450237'},
+            ],
+            'heeft_bezoekadres': {
+                'bronwaarde': 'Amstel 1 Amsterdam',
+            },
+            'heeft_postadres': {
+                'bronwaarde': 'Amstel 1 Amsterdam',
+            },
         }
         self.assertEqual(expected, m.map(source))
 

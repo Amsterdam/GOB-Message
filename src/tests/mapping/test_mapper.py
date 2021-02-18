@@ -19,6 +19,14 @@ class MapperTestImpl(Mapper):
             'field 6': 'i',
             'field 7': 'j',
         },
+        'field 8': {
+            'field 9': 'a.b',
+        },
+        'field 10': {
+            'field 11': 'a.b|a.c.d',
+            'field 12': 'a.c.e|a.b',
+            'field 13': 'a.c.e|e.c.f',
+        }
     }
 
 
@@ -34,6 +42,7 @@ class TestMapper(TestCase):
                 'b': 'AB',
                 'c': {
                     'd': 'ACD',
+                    'e': None,
                 },
             },
             'e': 'E',
@@ -61,17 +70,17 @@ class TestMapper(TestCase):
                 {'field 6': 'I1', 'field 7': 'J1'},
                 {'field 6': 'I2', 'field 7': 'J2'},
             ],
+            'field 8': {
+                'field 9': 'AB',
+            },
+            'field 10': {
+                'field 11': 'AB',
+                'field 12': 'AB',
+                'field 13': None,
+            }
         }
 
         self.assertEqual(expected, m.map(source))
-
-        del MapperTestImpl.fields['field 5']['_list']
-
-        with self.assertRaises(NotImplementedError):
-            m.map(source)
-
-        # Put back
-        MapperTestImpl.fields['field 5']['_list'] = True
 
     def test_get_id(self):
         """Tests parent method from Mapper

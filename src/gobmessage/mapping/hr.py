@@ -75,4 +75,34 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             'datum_einde_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumEinde'),
             'volgorde': 'handelsnaam.volgorde',
         },
+        'heeft_hoofdvestiging': {
+            'bronwaarde': 'maatschappelijkeActiviteit.wordtGeleidVanuit.commercieleVestiging.vestigingsnummer|'
+                          'maatschappelijkeActiviteit.wordtGeleidVanuit.nietCommercieleVestiging.vestigingsnummer',
+        },
+        'heeft_sbi_activiteiten_voor_onderneming': {
+            '_list': True,
+            '_base': 'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.sbiActiviteit',
+            'bronwaarde': 'sbiCode.code',
+        },
+        'heeft_sbi_activiteiten_voor_maatschappelijke_activiteit': {
+            '_list': True,
+            '_base': 'maatschappelijkeActiviteit.sbiActiviteit',
+            'bronwaarde': 'sbiCode.code',
+        },
+        'wordt_uitgeoefend_in_commerciele_vestiging': {
+            '_list': True,
+            '_base': 'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.wordtUitgeoefendIn',
+            'bronwaarde': 'commercieleVestiging.vestigingsnummer',
+        },
+        'wordt_uitgeoefend_in_niet_commerciele_vestiging': {
+            '_list': True,
+            '_base': 'maatschappelijkeActiviteit.wordtUitgeoefendIn',
+            'bronwaarde': 'nietCommercieleVestiging.vestigingsnummer',
+        },
+        'heeft_bezoekadres': {
+            'bronwaarde': 'maatschappelijkeActiviteit.bezoekLocatie.volledigAdres',
+        },
+        'heeft_postadres': {
+            'bronwaarde': 'maatschappelijkeActiviteit.postLocatie.volledigAdres',
+        },
     }
