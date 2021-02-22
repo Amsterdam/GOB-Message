@@ -63,11 +63,11 @@ class Mapper(ABC):
 
                     if source_field.get('_list', False):
                         assert '_base' in source_field, "Should have _base in combination with _list"
-
+                        base = get_value(src, source_field['_base'])
                         result[field_name] = [
                             map(item, submapping)
-                            for item in get_value(src, source_field['_base'])
-                        ]
+                            for item in base
+                        ] if base else []
                     else:
                         result[field_name] = map(src, submapping)
 
