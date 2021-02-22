@@ -101,12 +101,13 @@ class TestStorage(TestCase):
         gobmessage.database.connection.engine = MockedEngine()
         gobmessage.database.connection.session = MockedSession()
 
+    @mock.patch("gobmessage.database.connection.URL")
     @mock.patch("gobmessage.database.connection.migrate_storage")
     @mock.patch("gobmessage.database.connection.create_engine")
-    def test_connect(self, mock_create, mock_migrate):
+    def test_connect(self, mock_create, mock_migrate, mock_url):
         result = connect()
 
-        mock_create.assert_called()
+        mock_create.assert_called_with(mock_url.return_value, connect_args={'sslmode': 'require'})
         mock_migrate.assert_called()
         self.assertEqual(result, True)
         self.assertEqual(is_connected(), True)
