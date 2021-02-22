@@ -26,7 +26,12 @@ class MapperTestImpl(Mapper):
             'field 11': 'a.b|a.c.d',
             'field 12': 'a.c.e|a.b',
             'field 13': 'a.c.e|e.c.f',
-        }
+        },
+        'field 14': {
+            '_base': 'n.o.n.e.x.i.s.t.e.n.t',
+            '_list': True,
+            'field 15': 'a',
+        },
     }
 
 
@@ -77,7 +82,8 @@ class TestMapper(TestCase):
                 'field 11': 'AB',
                 'field 12': 'AB',
                 'field 13': None,
-            }
+            },
+            'field 14': [],
         }
 
         self.assertEqual(expected, m.map(source))
