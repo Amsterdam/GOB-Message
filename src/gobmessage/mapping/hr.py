@@ -4,7 +4,7 @@ from gobmessage.mapping.value_converter import ValueConverter
 
 class MaatschappelijkeActiviteitenMapper(Mapper):
     catalogue = 'hr'
-    collection = 'maatschappelijke_activiteiten'
+    collection = 'maatschappelijkeactiviteiten'
     entity_id = 'kvknummer'
     version = '0.1'
 
