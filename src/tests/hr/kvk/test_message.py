@@ -40,7 +40,7 @@ class TestKvkUpdateMessageProcessor(TestCase):
             pass
 
         p.inschrijving_collections = {
-            'maatschappelijke_activiteiten': TestMapper,
+            'maatschappelijkeactiviteiten': TestMapper,
             'some_other': TestMapper,
         }
 

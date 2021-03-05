@@ -16,7 +16,7 @@ class KvkUpdateMessageProcessor:
     source = 'KvK'
     application = 'KvkDataService'
     inschrijving_collections = {
-        'maatschappelijke_activiteiten': MaatschappelijkeActiviteitenMapper,
+        'maatschappelijkeactiviteiten': MaatschappelijkeActiviteitenMapper,
     }
     vestiging_collections = {}
 
