@@ -1,5 +1,4 @@
 import freezegun
-
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
@@ -37,11 +36,71 @@ class TestKvkDataService(TestCase):
         with freezegun.freeze_time('2020-09-01 19:00:03'):
             self.assertEqual('GOB-20200901190003000000', service._generate_reference())
 
+    def test_unpack_raw_elements(self):
+        service = KvkDataService()
+
+        a_elm = MagicMock()
+        a_elm.tag = '{somenamespace}a'
+        a_elm.text = 8
+        k_elm = MagicMock()
+        k_elm.tag= '{thenamespace}k'
+        k_elm.text = 55
+        z_elm = MagicMock()
+        z_elm.tag = '{http://some/other/namespace}z'
+        z_elm.text = 9
+        in_dict = {
+            'a': 1,
+            'b': 2,
+            'c': ['d', 'e', 'f'],
+            'g': {
+                'h': 3,
+                'i': [{
+                    'j': 4,
+                    'k': 5,
+                    '_raw_elements': [k_elm],
+                }, {
+                    'l': 6,
+                    'm': 7,
+                }],
+                'n': {
+                    'o': 10,
+                    'p': 11,
+                }
+            },
+            '_raw_elements': [
+                a_elm,
+                z_elm,
+            ]
+        }
+
+        expected = {
+            'a': 8,
+            'b': 2,
+            'c': ['d', 'e', 'f'],
+            'g': {
+                'h': 3,
+                'i': [{
+                    'j': 4,
+                    'k': 55,
+                }, {
+                    'l': 6,
+                    'm': 7,
+                }],
+                'n': {
+                    'o': 10,
+                    'p': 11,
+                }
+            },
+            'z': 9,
+        }
+        self.assertEqual(expected, service._unpack_raw_elements(in_dict))
+
     @patch("gobmessage.hr.kvk.dataservice.service.serialize_object")
     def test_make_request(self, mock_serialize):
         service = KvkDataService()
         service._get_client = MagicMock()
         service._generate_reference = MagicMock()
+        service._unpack_raw_elements = MagicMock()
 
         res = service._make_request('someAction', kwarg1='value1', kwarg2='value2')
 
@@ -51,7 +110,8 @@ class TestKvkDataService(TestCase):
             kwarg2='value2'
         )
         mock_serialize.assert_called_with(service._get_client().service.someAction())
-        self.assertEqual(mock_serialize.return_value, res)
+        service._unpack_raw_elements.assert_called_with(mock_serialize.return_value)
+        self.assertEqual(service._unpack_raw_elements.return_value, res)
 
     def test_request_methods(self):
         testcases = [
