@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 
 from gobmessage.config import API_BASE_PATH
-from gobmessage.hr.kvk.endpoint import kvk_endpoint
+from gobmessage.hr.kvk.endpoint import kvk_endpoint, inschrijving_endpoint
 
 
 def _health():
@@ -25,6 +25,7 @@ def get_flask_app():
         ('/status/health/', _health, ['GET']),
 
         (f'{API_BASE_PATH}/hr', kvk_endpoint, ['POST']),
+        (f'{API_BASE_PATH}/inschrijving/<kvknummer>', inschrijving_endpoint, ['GET']),
     ]
 
     app = Flask(__name__)

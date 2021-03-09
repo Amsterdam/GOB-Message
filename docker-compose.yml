@@ -6,10 +6,15 @@ services:
     build: src
     container_name: gobmessage
     ports:
-      - "8167:8000"
+      # To use oauth2-proxy:
+      #   Set port to 8000
+      #   Set the variables in .env
+      #   Set cookie_secure in oauth2-proxy.cfg to false
+      # Use port 8001 to bypass the OAuth2 Proxy locally
+      - "8167:8001"
     environment:
       MESSAGE_BROKER_ADDRESS: rabbitmq
-      UWSGI_HTTP: ":8000"
+      UWSGI_HTTP: ":8001"
       UWSGI_MODULE: "gobmessage.wsgi"
       UWSGI_CALLABLE: "app"
       UWSGI_PROCESSES: "4"
@@ -22,6 +27,12 @@ services:
       GOB_SHARED_DIR: /app/shared
       GOB_MESSAGE_DATABASE_HOST: message_database
       GOB_MESSAGE_DATABASE_PORT: 5432
+      
+      OAUTH2_PROXY_CLIENT_ID: ${OAUTH2_PROXY_CLIENT_ID}
+      OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET}
+      OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET}
+      OAUTH2_PROXY_OIDC_ISSUER_URL: ${OAUTH2_PROXY_OIDC_ISSUER_URL}
+      OAUTH2_PROXY_REDIRECT_URL: ${OAUTH2_PROXY_REDIRECT_URL}
     depends_on:
       - message_database
     volumes:
