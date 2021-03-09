@@ -44,37 +44,39 @@ class Mapper(ABC):
     def collection(self):  # pragma: no cover
         pass
 
-    def map(self, source: dict) -> dict:
-        def map(src, fields: dict):
-            """
+    def _map(self, src, fields: dict):
+        """
 
-            :param src: dict or str
-            :param fields:
-            :return:
-            """
-            result = {}
-            for field_name, source_field in fields.items():
-                if source_field == ".":
-                    result[field_name] = src
-                elif isinstance(source_field, tuple):
-                    result[field_name] = source_field[0](get_value(src, source_field[1]))
-                elif isinstance(source_field, dict):
-                    submapping = {k: v for k, v in source_field.items() if not k.startswith('_')}
+        :param src: dict or str
+        :param fields:
+        :return:
+        """
+        result = {}
+        for field_name, source_field in fields.items():
+            if source_field == ".":
+                result[field_name] = src
+            elif isinstance(source_field, tuple):
+                result[field_name] = source_field[0](get_value(src, source_field[1]))
+            elif isinstance(source_field, dict):
+                submapping = {k: v for k, v in source_field.items() if not k.startswith('_')}
 
-                    if source_field.get('_list', False):
-                        assert '_base' in source_field, "Should have _base in combination with _list"
-                        base = get_value(src, source_field['_base'])
-                        result[field_name] = [
-                            map(item, submapping)
-                            for item in base
-                        ] if base else []
-                    else:
-                        result[field_name] = map(src, submapping)
-
+                if source_field.get('_list', False):
+                    assert '_base' in source_field, "Should have _base in combination with _list"
+                    base = get_value(src, source_field['_base'])
+                    result[field_name] = [
+                        self._map(item, submapping)
+                        for item in base
+                    ] if base else []
                 else:
-                    result[field_name] = get_value(src, source_field)
-            return result
-        return map(source, self.fields)
+                    result[field_name] = self._map(src, submapping)
+            elif isinstance(source_field, str) and source_field[0] == '=':
+                result[field_name] = source_field[1:]
+            else:
+                result[field_name] = get_value(src, source_field)
+        return result
+
+    def map(self, source: dict) -> dict:
+        return self._map(source, self.fields)
 
     def get_id(self, mapped_entity: dict) -> str:
         return mapped_entity.get(self.entity_id)
