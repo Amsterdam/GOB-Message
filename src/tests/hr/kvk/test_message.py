@@ -39,13 +39,13 @@ class TestKvkUpdateMessageProcessor(TestCase):
         class TestMapper:
             pass
 
-        p.inschrijving_collections = {
-            'maatschappelijkeactiviteiten': TestMapper,
+        p.inschrijving_entities = {
+            'm.a': TestMapper,
             'some_other': TestMapper,
         }
 
-        res = p._process_inschrijving({'product': {'some': 'inschrijving'}})
-        self.assertEqual([p._process_entity.return_value, p._process_entity.return_value], res)
+        res = p._process_inschrijving({'product': {'m': {'a': {'some': 'inschrijving'}}}})
+        self.assertEqual([p._process_entity.return_value], res)
 
         p._process_entity.assert_called_with({'some': 'inschrijving'}, ANY)
         call_args = p._process_entity.call_args
@@ -54,7 +54,7 @@ class TestKvkUpdateMessageProcessor(TestCase):
     def test_process_vestiging(self):
         p = KvkUpdateMessageProcessor()
         p._process_entity = MagicMock()
-        p.vestiging_collections = {}
+        p.vestiging_entities = {}
 
         # No mappings
         res = p._process_vestiging({'product': {'some': 'inschrijving'}})
@@ -62,8 +62,8 @@ class TestKvkUpdateMessageProcessor(TestCase):
         p._process_entity.assert_not_called()
 
         # With mapping
-        p.vestiging_collections = {'testobj': MagicMock}
-        res = p._process_vestiging({'product': {'some': 'inschrijving'}})
+        p.vestiging_entities = {'testobj': MagicMock}
+        res = p._process_vestiging({'product': {'testobj': {'some': 'inschrijving'}}})
         self.assertEqual([p._process_entity.return_value], res)
 
     def test_process_entity(self):
@@ -99,6 +99,7 @@ class TestKvkUpdateMessageProcessor(TestCase):
             'header': {
                 'catalogue': 'the cat',
                 'entity': 'the coll',
+                'collection': 'the coll',
                 'entity_id': 'the entity id',
                 'entity_id_attr': mapper.entity_id,
                 'source': 'KvK',
