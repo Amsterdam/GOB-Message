@@ -60,8 +60,8 @@ class KvkDataService:
         for k, v in in_dict.items():
             if isinstance(v, dict):
                 result[k] = self._unpack_raw_elements(v)
-            elif isinstance(v, list) and len(v) > 0 and isinstance(v[0], dict):
-                result[k] = [self._unpack_raw_elements(item) for item in v]
+            elif isinstance(v, list):
+                result[k] = [self._unpack_raw_elements(item) if isinstance(item, dict) else item for item in v]
             else:
                 result[k] = v
         return result
