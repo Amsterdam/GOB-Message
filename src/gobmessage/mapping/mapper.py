@@ -56,7 +56,8 @@ class Mapper(ABC):
             if source_field == ".":
                 result[field_name] = src
             elif isinstance(source_field, tuple):
-                result[field_name] = source_field[0](get_value(src, source_field[1]))
+                args = [get_value(src, field) for field in source_field[1:]]
+                result[field_name] = source_field[0](*args)
             elif isinstance(source_field, dict):
                 submapping = {k: v for k, v in source_field.items() if not k.startswith('_')}
 

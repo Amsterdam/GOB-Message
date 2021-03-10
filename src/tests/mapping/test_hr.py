@@ -1,6 +1,95 @@
 from unittest import TestCase
 
-from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper
+from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper
+
+
+class TestLocatiesMapper(TestCase):
+
+    def test_map(self):
+        m = LocatiesMapper()
+
+        source = {
+            'extraElementen': None,
+            'registratie': {
+                'datumAanvang': '20160822',
+                'datumEinde': None,
+                'soortMutatie': None,
+                'registratieTijdstip': '20161028111046578',
+                'registratieTijdstipNoValue': None
+            },
+            'toevoegingAdres': None,
+            'afgeschermd': {
+                'code': 'N',
+                'omschrijving': 'Nee',
+                'referentieType': 'geenRT'
+            },
+            'adres': {
+                'binnenlandsAdres': {
+                    'extraElementen': None,
+                    'straatnaam': 'Amstel',
+                    'aanduidingBijHuisnummer': None,
+                    'huisnummer': 1,
+                    'huisnummerToevoeging': None,
+                    'huisletter': None,
+                    'postbusnummer': None,
+                    'postcode': {
+                        'cijfercombinatie': '1011',
+                        'lettercombinatie': 'PN'
+                    },
+                    'plaats': 'Enschede',
+                    'bagId': {
+                        'identificatieNummeraanduiding': '0363099114014401',
+                        'identificatieAdresseerbaarObject': '036301490250'
+                    }
+                },
+                'buitenlandsAdres': None
+            },
+            'volledigAdres': 'Amstel 1 1011PN Amsterdam',
+        }
+        expected = {
+            'afgeschermd': False,
+            'datum_aanvang': '2016-08-22',
+            'datum_einde': None,
+            'heeft_ligplaats': {
+                'bronwaarde': None
+            },
+            'heeft_nummeraanduiding': {
+                'bronwaarde': '0363099114014401'
+            },
+            'heeft_standplaats': {
+                'bronwaarde': None
+            },
+            'heeft_verblijfsobject': {
+                'bronwaarde': '036301490250'
+            },
+            'huisletter': None,
+            'huisnummer': 1,
+            'huisnummer_toevoeging': None,
+            'identificatie': 'Amstel 1 1011PN Amsterdam',
+            'land_buitenland': None,
+            'plaats': 'Enschede',
+            'postbusnummer': None,
+            'postcode': '1011PN',
+            'postcode_plaats_buitenland': None,
+            'regio_buitenland': None,
+            'straat_huisnummer_buitenland': None,
+            'straatnaam': 'Amstel',
+            'tijdstip_registratie': '2016-10-28T11:10:46.578000',
+            'toevoeging_adres': None,
+            'volgnummer': '1',
+            'volledig_adres': 'Amstel 1 1011PN Amsterdam'
+        }
+        self.assertEqual(expected, m.map(source))
+
+    def test_properties(self):
+        """Tests properties present and set
+
+        :return:
+        """
+        props = ['catalogue', 'collection', 'entity_id', 'version', 'fields']
+
+        for prop in props:
+            self.assertTrue(hasattr(LocatiesMapper, prop) and getattr(LocatiesMapper, prop))
 
 
 class TestMaatschappelijkeActiviteitenMapper(TestCase):
@@ -8,7 +97,7 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
 
     """
 
-    def test_map_mac(self):
+    def test_map(self):
         """Integration test
 
         :return:

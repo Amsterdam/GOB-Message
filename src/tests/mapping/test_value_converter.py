@@ -32,3 +32,18 @@ class TestValueConverter(TestCase):
 
         for input, expected in testcases:
             self.assertEqual(expected, ValueConverter.to_datetime(input))
+
+    def test_filter_aot_methods(self):
+        vot = 'xxxx01xxxxxxxx'
+        lps = 'xxxx02xxxxxxxx'
+        sps = 'xxxx03xxxxxxxx'
+
+        self.assertEquals(vot, ValueConverter.filter_vot(vot))
+        self.assertEquals(lps, ValueConverter.filter_lps(lps))
+        self.assertEquals(sps, ValueConverter.filter_sps(sps))
+
+        self.assertIsNone(ValueConverter.filter_vot(sps))
+        self.assertIsNone(ValueConverter.filter_lps(vot))
+        self.assertIsNone(ValueConverter.filter_sps(vot))
+
+        self.assertIsNone(ValueConverter.filter_vot(None))
