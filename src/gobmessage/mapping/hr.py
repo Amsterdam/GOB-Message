@@ -2,6 +2,51 @@ from gobmessage.mapping.mapper import Mapper
 from gobmessage.mapping.value_converter import ValueConverter
 
 
+class LocatiesMapper(Mapper):
+    catalogue = 'hr'
+    collection = 'locaties'
+    entity_id = 'identificatie'
+    version = '0.1'
+
+    fields = {
+        'identificatie': 'volledigAdres',
+        'volgnummer': '=1',
+        'volledig_adres': 'volledigAdres',
+        'tijdstip_registratie': (ValueConverter.to_datetime, 'registratie.registratieTijdstip'),
+        'datum_aanvang': (ValueConverter.to_date, 'registratie.datumAanvang'),
+        'datum_einde': (ValueConverter.to_date, 'registratie.datumEinde'),
+        'afgeschermd': (ValueConverter.jn_to_bool, 'afgeschermd.code'),
+        'toevoeging_adres': 'toevoegingAdres',
+        'straatnaam': 'adres.binnenlandsAdres.straatnaam',
+        'huisnummer': 'adres.binnenlandsAdres.huisnummer',
+        'huisletter': 'adres.binnenlandsAdres.huisletter',
+        'huisnummer_toevoeging': 'adres.binnenlandsAdres.huisnummerToevoeging',
+        'postbusnummer': 'adres.binnenlandsAdres.postbusnummer',
+        'postcode': (
+            ValueConverter.concat(''),
+            'adres.binnenlandsAdres.postcode.cijfercombinatie',
+            'adres.binnenlandsAdres.postcode.lettercombinatie'
+        ),
+        'plaats': 'adres.binnenlandsAdres.plaats',
+        'straat_huisnummer_buitenland': 'adres.buitenlandsAdres.straatHuisnummer',
+        'postcode_plaats_buitenland': 'adres.buitenlandsAdres.postcodeWoonplaats',
+        'regio_buitenland': 'adres.buitenlandsAdres.regio',
+        'land_buitenland': 'adres.buitenlandsAdres.land',
+        'heeft_nummeraanduiding': {
+            'bronwaarde': 'adres.binnenlandsAdres.bagId.identificatieNummeraanduiding',
+        },
+        'heeft_verblijfsobject': {
+            'bronwaarde': (ValueConverter.filter_vot, 'adres.binnenlandsAdres.bagId.identificatieAdresseerbaarObject'),
+        },
+        'heeft_ligplaats': {
+            'bronwaarde': (ValueConverter.filter_lps, 'adres.binnenlandsAdres.bagId.identificatieAdresseerbaarObject'),
+        },
+        'heeft_standplaats': {
+            'bronwaarde': (ValueConverter.filter_sps, 'adres.binnenlandsAdres.bagId.identificatieAdresseerbaarObject'),
+        }
+    }
+
+
 class MaatschappelijkeActiviteitenMapper(Mapper):
     catalogue = 'hr'
     collection = 'maatschappelijkeactiviteiten'
@@ -9,65 +54,65 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
     version = '0.1'
 
     fields = {
-        'kvknummer': 'maatschappelijkeActiviteit.kvkNummer',
-        'naam': 'maatschappelijkeActiviteit.naam',
+        'kvknummer': 'kvkNummer',
+        'naam': 'naam',
         'non_mailing': (
             ValueConverter.jn_to_bool,
-            'maatschappelijkeActiviteit.nonMailing.code'
+            'nonMailing.code'
         ),
         'datum_aanvang_maatschappelijke_activiteit': (
             ValueConverter.to_date,
-            'maatschappelijkeActiviteit.registratie.datumAanvang'
+            'registratie.datumAanvang'
         ),
         'datum_einde_maatschappelijke_activiteit': (
             ValueConverter.to_date,
-            'maatschappelijkeActiviteit.registratie.datumEinde'
+            'registratie.datumEinde'
         ),
         'registratie_tijdstip_maatschappelijke_activiteit': (
             ValueConverter.to_datetime,
-            'maatschappelijkeActiviteit.registratie.registratieTijdstip'
+            'registratie.registratieTijdstip'
         ),
         'incidenteel_uitlenen_arbeidskrachten': (
             ValueConverter.jn_to_bool,
-            'maatschappelijkeActiviteit.incidenteelUitlenenArbeidskrachten.code'
+            'incidenteelUitlenenArbeidskrachten.code'
         ),
         'communicatienummer': {
-            '_base': 'maatschappelijkeActiviteit.communicatiegegevens.communicatienummer',
+            '_base': 'communicatiegegevens.communicatienummer',
             '_list': True,
             'nummer': 'nummer',
             'toegangscode': 'toegangscode',
             'soort': 'soort.omschrijving',
         },
         'email_adres': {
-            '_base': 'maatschappelijkeActiviteit.communicatiegegevens.emailAdres',
+            '_base': 'communicatiegegevens.emailAdres',
             '_list': True,
             'adres': '.',
         },
         'domeinnaam': {
-            '_base': 'maatschappelijkeActiviteit.communicatiegegevens.domeinNaam',
+            '_base': 'communicatiegegevens.domeinNaam',
             '_list': True,
             'naam': '.',
         },
         'registratie_tijdstip_onderneming': (
             ValueConverter.to_datetime,
-            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.registratie.registratieTijdstip'
+            'manifesteertZichAls.onderneming.registratie.registratieTijdstip'
         ),
         'datum_aanvang_onderneming': (
             ValueConverter.to_date,
-            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.registratie.datumAanvang'
+            'manifesteertZichAls.onderneming.registratie.datumAanvang'
         ),
         'datum_einde_onderneming': (
             ValueConverter.to_date,
-            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.registratie.datumEinde'
+            'manifesteertZichAls.onderneming.registratie.datumEinde'
         ),
         'totaal_werkzame_personen':
-            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.totaalWerkzamePersonen',
+            'manifesteertZichAls.onderneming.totaalWerkzamePersonen',
         'voltijd_werkzame_personen':
-            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.voltijdWerkzamePersonen',
+            'manifesteertZichAls.onderneming.voltijdWerkzamePersonen',
         'deeltijd_werkzame_personen':
-            'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.deeltijdWerkzamePersonen',
+            'manifesteertZichAls.onderneming.deeltijdWerkzamePersonen',
         'handelt_onder_handelsnamen': {
-            '_base': 'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.handeltOnder',
+            '_base': 'manifesteertZichAls.onderneming.handeltOnder',
             '_list': True,
             'omschrijving': 'handelsnaam.naam',
             'tijdstip_registratie': (ValueConverter.to_datetime, 'handelsnaam.registratie.registratieTijdstip'),
@@ -76,33 +121,33 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             'volgorde': 'handelsnaam.volgorde',
         },
         'heeft_hoofdvestiging': {
-            'bronwaarde': 'maatschappelijkeActiviteit.wordtGeleidVanuit.commercieleVestiging.vestigingsnummer|'
-                          'maatschappelijkeActiviteit.wordtGeleidVanuit.nietCommercieleVestiging.vestigingsnummer',
+            'bronwaarde': 'wordtGeleidVanuit.commercieleVestiging.vestigingsnummer|'
+                          'wordtGeleidVanuit.nietCommercieleVestiging.vestigingsnummer',
         },
         'heeft_sbi_activiteiten_voor_onderneming': {
             '_list': True,
-            '_base': 'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.sbiActiviteit',
+            '_base': 'manifesteertZichAls.onderneming.sbiActiviteit',
             'bronwaarde': 'sbiCode.code',
         },
         'heeft_sbi_activiteiten_voor_maatschappelijke_activiteit': {
             '_list': True,
-            '_base': 'maatschappelijkeActiviteit.sbiActiviteit',
+            '_base': 'sbiActiviteit',
             'bronwaarde': 'sbiCode.code',
         },
         'wordt_uitgeoefend_in_commerciele_vestiging': {
             '_list': True,
-            '_base': 'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.wordtUitgeoefendIn',
+            '_base': 'manifesteertZichAls.onderneming.wordtUitgeoefendIn',
             'bronwaarde': 'commercieleVestiging.vestigingsnummer',
         },
         'wordt_uitgeoefend_in_niet_commerciele_vestiging': {
             '_list': True,
-            '_base': 'maatschappelijkeActiviteit.wordtUitgeoefendIn',
+            '_base': 'wordtUitgeoefendIn',
             'bronwaarde': 'nietCommercieleVestiging.vestigingsnummer',
         },
         'heeft_bezoekadres': {
-            'bronwaarde': 'maatschappelijkeActiviteit.bezoekLocatie.volledigAdres',
+            'bronwaarde': 'bezoekLocatie.volledigAdres',
         },
         'heeft_postadres': {
-            'bronwaarde': 'maatschappelijkeActiviteit.postLocatie.volledigAdres',
+            'bronwaarde': 'postLocatie.volledigAdres',
         },
     }

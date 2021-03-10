@@ -9,16 +9,18 @@ from gobmessage.database.repository import KvkUpdateMessageRepository, UpdateObj
 from gobmessage.database.session import DatabaseSession
 from gobmessage.hr.kvk.dataservice.service import KvkDataService
 from gobmessage.mapping.mapper import Mapper
-from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper
+from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper
 
 
 class KvkUpdateMessageProcessor:
     source = 'KvK'
     application = 'KvkDataService'
-    inschrijving_collections = {
-        'maatschappelijkeactiviteiten': MaatschappelijkeActiviteitenMapper,
+    inschrijving_entities = {
+        'maatschappelijkeActiviteit': MaatschappelijkeActiviteitenMapper,
+        'maatschappelijkeActiviteit.postLocatie': LocatiesMapper,
+        'maatschappelijkeActiviteit.bezoekLocatie': LocatiesMapper,
     }
-    vestiging_collections = {}
+    vestiging_entities = {}
 
     def __init__(self):
         self.dataservice = KvkDataService()
@@ -34,16 +36,33 @@ class KvkUpdateMessageProcessor:
             res += self._process_vestiging(vestiging)
         return res
 
+    def _get_base(self, base_path: str, obj: dict) -> dict:
+        keys = ['product'] + base_path.split('.')
+        current = obj
+
+        try:
+            for key in keys:
+                current = current[key]
+        except KeyError:
+            return {}
+        return current
+
     def _process_inschrijving(self, inschrijving: dict) -> list[UpdateObject]:
         res = []
-        for collection, mapper in self.inschrijving_collections.items():
-            res.append(self._process_entity(inschrijving['product'], mapper()))
+        for base_path, mapper in self.inschrijving_entities.items():
+            base = self._get_base(base_path, inschrijving)
+
+            if base:
+                res.append(self._process_entity(base, mapper()))
         return res
 
     def _process_vestiging(self, vestiging: dict) -> list[UpdateObject]:
         res = []
-        for collection, mapper in self.vestiging_collections.items():
-            res.append(self._process_entity(vestiging['product'], mapper()))
+        for base_path, mapper in self.vestiging_entities.items():
+            base = self._get_base(base_path, vestiging)
+
+            if base:
+                res.append(self._process_entity(base, mapper()))
         return res
 
     def _process_entity(self, source: dict, mapper: Mapper) -> UpdateObject:
@@ -66,6 +85,7 @@ class KvkUpdateMessageProcessor:
             'header': {
                 'catalogue': update_object.catalogue,
                 'entity': update_object.collection,
+                'collection': update_object.collection,
                 'entity_id': update_object.entity_id,
                 'entity_id_attr': mapper.entity_id,
                 'source': self.source,

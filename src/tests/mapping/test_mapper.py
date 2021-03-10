@@ -32,6 +32,7 @@ class MapperTestImpl(Mapper):
             '_list': True,
             'field 15': 'a',
         },
+        'field 15': '=someconstant',
     }
 
 
@@ -84,6 +85,7 @@ class TestMapper(TestCase):
                 'field 13': None,
             },
             'field 14': [],
+            'field 15': 'someconstant',
         }
 
         self.assertEqual(expected, m.map(source))
