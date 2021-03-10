@@ -12,6 +12,38 @@ class LocatiesMapper(Mapper):
         'identificatie': 'volledigAdres',
         'volgnummer': '=1',
         'volledig_adres': 'volledigAdres',
+        'tijdstip_registratie': (ValueConverter.to_datetime, 'registratie.registratieTijdstip'),
+        'datum_aanvang': (ValueConverter.to_date, 'registratie.datumAanvang'),
+        'datum_einde': (ValueConverter.to_date, 'registratie.datumEinde'),
+        'afgeschermd': (ValueConverter.jn_to_bool, 'afgeschermd.code'),
+        'toevoeging_adres': 'toevoegingAdres',
+        'straatnaam': 'adres.binnenlandsAdres.straatnaam',
+        'huisnummer': 'adres.binnenlandsAdres.huisnummer',
+        'huisletter': 'adres.binnenlandsAdres.huisletter',
+        'huisnummer_toevoeging': 'adres.binnenlandsAdres.huisnummerToevoeging',
+        'postbusnummer': 'adres.binnenlandsAdres.postbusnummer',
+        'postcode': (
+            ValueConverter.concat(''),
+            'adres.binnenlandsAdres.postcode.cijfercombinatie',
+            'adres.binnenlandsAdres.postcode.lettercombinatie'
+        ),
+        'plaats': 'adres.binnenlandsAdres.plaats',
+        'straat_huisnummer_buitenland': 'adres.buitenlandsAdres.straatHuisnummer',
+        'postcode_plaats_buitenland': 'adres.buitenlandsAdres.postcodeWoonplaats',
+        'regio_buitenland': 'adres.buitenlandsAdres.regio',
+        'land_buitenland': 'adres.buitenlandsAdres.land',
+        'heeft_nummeraanduiding': {
+            'bronwaarde': 'adres.binnenlandsAdres.bagId.identificatieNummeraanduiding',
+        },
+        'heeft_verblijfsobject': {
+            'bronwaarde': (ValueConverter.filter_vot, 'adres.binnenlandsAdres.bagId.identificatieAdresseerbaarObject'),
+        },
+        'heeft_ligplaats': {
+            'bronwaarde': (ValueConverter.filter_lps, 'adres.binnenlandsAdres.bagId.identificatieAdresseerbaarObject'),
+        },
+        'heeft_standplaats': {
+            'bronwaarde': (ValueConverter.filter_sps, 'adres.binnenlandsAdres.bagId.identificatieAdresseerbaarObject'),
+        }
     }
 
 
