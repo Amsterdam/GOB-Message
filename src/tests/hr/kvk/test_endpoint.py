@@ -26,7 +26,6 @@ class TestEndpoint(TestCase):
             mock_bericht_rv = mock_bericht.return_value
             mock_message_rv = mock_message.return_value
             self.assertEqual(mock_bericht_rv.get_kvk_nummer.return_value, mock_message_rv.kvk_nummer)
-            self.assertEqual(mock_bericht_rv.get_vestigingsnummer.return_value, mock_message_rv.vestigingsnummer)
             self.assertEqual('Some data', mock_message_rv.message)
 
             mock_repo.assert_called_with(mock_session().__enter__())
