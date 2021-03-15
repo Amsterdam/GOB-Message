@@ -9,7 +9,7 @@ from gobmessage.database.repository import KvkUpdateMessageRepository, UpdateObj
 from gobmessage.database.session import DatabaseSession
 from gobmessage.hr.kvk.dataservice.service import KvkDataService
 from gobmessage.mapping.mapper import Mapper
-from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper
+from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper, VestigingenMapper
 
 
 class KvkUpdateMessageProcessor:
@@ -45,20 +45,32 @@ class KvkUpdateMessageProcessor:
             base = self._get_base(base_path, inschrijving)
 
             if base:
-                res.append(self._process_entity(base, mapper()))
+                res += self._process_entity(base, mapper())
         return res
 
-    def _process_entity(self, source: dict, mapper: Mapper) -> UpdateObject:
+    def _process_entity(self, source: dict, mapper: Mapper) -> list[UpdateObject]:
         mapped_entity = mapper.map(source)
 
         update_object = UpdateObject()
         update_object.catalogue = mapper.catalogue
         update_object.collection = mapper.collection
         update_object.entity_id = mapper.get_id(mapped_entity)
+        update_objects = [update_object]
 
         self._start_workflow(update_object, mapped_entity, mapper)
 
-        return update_object
+        if isinstance(mapper, MaatschappelijkeActiviteitenMapper):
+            update_objects += self._get_vestigingen(mapper.get_vestigingsnummers(mapped_entity))
+
+        return update_objects
+
+    def _get_vestigingen(self, vestigingnummers: list[int]):
+        res = []
+        mapper = VestigingenMapper()
+        for vestigingnummer in vestigingnummers:
+            vestiging = self.dataservice.ophalen_vestiging_by_vestigingsnummer(vestigingnummer)
+            res += self._process_entity(vestiging['product'], mapper)
+        return res
 
     def _start_workflow(self, update_object: UpdateObject, mapped_entity: dict, mapper: Mapper):
         workflow = {
