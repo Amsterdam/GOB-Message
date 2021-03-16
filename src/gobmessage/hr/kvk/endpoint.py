@@ -16,7 +16,6 @@ def kvk_endpoint():
     message = KvkUpdateMessage()
     message.message = request_data
     message.kvk_nummer = kvk_bericht.get_kvk_nummer()
-    message.vestigingsnummer = kvk_bericht.get_vestigingsnummer()
 
     with DatabaseSession() as session:
         message = KvkUpdateMessageRepository(session).save(message)

@@ -20,21 +20,13 @@ class KvkUpdateMessageProcessor:
         'maatschappelijkeActiviteit.postLocatie': LocatiesMapper,
         'maatschappelijkeActiviteit.bezoekLocatie': LocatiesMapper,
     }
-    vestiging_entities = {}
 
     def __init__(self):
         self.dataservice = KvkDataService()
 
     def process(self, message: KvkUpdateMessage) -> list[UpdateObject]:
-        res = []
-        if message.kvk_nummer:
-            inschrijving = self.dataservice.ophalen_inschrijving_by_kvk_nummer(message.kvk_nummer)
-            res += self._process_inschrijving(inschrijving)
-
-        if message.vestigingsnummer:
-            vestiging = self.dataservice.ophalen_vestiging_by_vestigingsnummer(message.vestigingsnummer)
-            res += self._process_vestiging(vestiging)
-        return res
+        inschrijving = self.dataservice.ophalen_inschrijving_by_kvk_nummer(message.kvk_nummer)
+        return self._process_inschrijving(inschrijving)
 
     def _get_base(self, base_path: str, obj: dict) -> dict:
         keys = ['product'] + base_path.split('.')
@@ -51,15 +43,6 @@ class KvkUpdateMessageProcessor:
         res = []
         for base_path, mapper in self.inschrijving_entities.items():
             base = self._get_base(base_path, inschrijving)
-
-            if base:
-                res.append(self._process_entity(base, mapper()))
-        return res
-
-    def _process_vestiging(self, vestiging: dict) -> list[UpdateObject]:
-        res = []
-        for base_path, mapper in self.vestiging_entities.items():
-            base = self._get_base(base_path, vestiging)
 
             if base:
                 res.append(self._process_entity(base, mapper()))

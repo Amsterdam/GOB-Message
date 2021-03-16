@@ -12,25 +12,15 @@ class TestKvkUpdateMessageProcessor(TestCase):
 
     def test_process(self):
         message = KvkUpdateMessage()
-        message.kvk_nummer = None
-        message.vestigingsnummer = None
+        message.kvk_nummer = 123
+        message.vestigingsnummer = 456
 
         p = KvkUpdateMessageProcessor()
         p._process_inschrijving = MagicMock()
-        p._process_vestiging = MagicMock()
 
-        self.assertEqual([], p.process(message))
-
-        message.kvk_nummer = 123
-        message.vestigingsnummer = 456
-        p._process_inschrijving.return_value = [1, 2]
-        p._process_vestiging.return_value = [3, 4]
-
-        self.assertEqual([1, 2, 3, 4], p.process(message))
+        self.assertEqual(p._process_inschrijving.return_value, p.process(message))
         p._process_inschrijving.assert_called_with(p.dataservice.ophalen_inschrijving_by_kvk_nummer.return_value)
-        p._process_vestiging.assert_called_with(p.dataservice.ophalen_vestiging_by_vestigingsnummer.return_value)
         p.dataservice.ophalen_inschrijving_by_kvk_nummer.assert_called_with(123)
-        p.dataservice.ophalen_vestiging_by_vestigingsnummer.assert_called_with(456)
 
     def test_process_inschrijving(self):
         p = KvkUpdateMessageProcessor()
@@ -50,21 +40,6 @@ class TestKvkUpdateMessageProcessor(TestCase):
         p._process_entity.assert_called_with({'some': 'inschrijving'}, ANY)
         call_args = p._process_entity.call_args
         self.assertIsInstance(call_args[0][1], TestMapper)
-
-    def test_process_vestiging(self):
-        p = KvkUpdateMessageProcessor()
-        p._process_entity = MagicMock()
-        p.vestiging_entities = {}
-
-        # No mappings
-        res = p._process_vestiging({'product': {'some': 'inschrijving'}})
-        self.assertEqual([], res)
-        p._process_entity.assert_not_called()
-
-        # With mapping
-        p.vestiging_entities = {'testobj': MagicMock}
-        res = p._process_vestiging({'product': {'testobj': {'some': 'inschrijving'}}})
-        self.assertEqual([p._process_entity.return_value], res)
 
     def test_process_entity(self):
         p = KvkUpdateMessageProcessor()
