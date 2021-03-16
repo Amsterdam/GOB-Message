@@ -10,7 +10,7 @@ class VestigingenMapper(Mapper):
 
     fields = {
         'vestigingsnummer': 'vestigingsnummer',
-        'naam': 'naamgeving',
+        'naam': 'naamgeving.naam',
     }
 
     def map(self, source: dict) -> dict:
