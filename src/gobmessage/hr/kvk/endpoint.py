@@ -41,3 +41,16 @@ def inschrijving_endpoint(kvknummer):
     inschrijving = dataservice.ophalen_inschrijving_by_kvk_nummer(kvknummer, raw_response=True)
 
     return Response(inschrijving, content_type='application/xml')
+
+
+def vestiging_endpoint(vestigingsnummer):
+    """Accepts a vestigingsnummer as path parameter and returns the result from the KvkDataService.
+
+    Used internally for testing purposes.
+
+    :return:
+    """
+    dataservice = KvkDataService()
+    vestiging = dataservice.ophalen_vestiging_by_vestigingsnummer(vestigingsnummer, raw_response=True)
+
+    return Response(vestiging, content_type='application/xml')

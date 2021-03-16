@@ -17,7 +17,7 @@ def _getenv(varname, default_value=None, is_optional=False):
 
 
 GOB_MESSAGE_PORT = os.getenv('GOB_MESSAGE_PORT', default=8167)
-API_BASE_PATH = os.getenv("BASE_PATH", default="")
+API_BASE_PATH = os.getenv("BASE_PATH", default="/gob_message")
 
 MESSAGE_EXCHANGE = "gob.message"
 KVK_MESSAGE_QUEUE = f"{MESSAGE_EXCHANGE}.kvk"
