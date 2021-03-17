@@ -4,7 +4,8 @@ from unittest.mock import ANY, MagicMock, call, patch
 from freezegun import freeze_time
 
 from gobmessage.hr.kvk.message import (IMPORT_OBJECT, KvkUpdateMessage, KvkUpdateMessageProcessor, MESSAGE_EXCHANGE,
-                                       UPDATE_OBJECT_COMPLETE_KEY, UpdateObject, kvk_message_handler)
+                                       UPDATE_OBJECT_COMPLETE_KEY, UpdateObject, kvk_message_handler,
+                                       MaatschappelijkeActiviteitenMapper)
 
 
 @patch("gobmessage.hr.kvk.message.KvkDataService", MagicMock())
@@ -24,7 +25,8 @@ class TestKvkUpdateMessageProcessor(TestCase):
 
     def test_process_inschrijving(self):
         p = KvkUpdateMessageProcessor()
-        p._process_entity = MagicMock()
+        process_result = MagicMock()
+        p._process_entity = MagicMock(return_value=[process_result])
 
         class TestMapper:
             pass
@@ -35,7 +37,7 @@ class TestKvkUpdateMessageProcessor(TestCase):
         }
 
         res = p._process_inschrijving({'product': {'m': {'a': {'some': 'inschrijving'}}}})
-        self.assertEqual([p._process_entity.return_value], res)
+        self.assertEqual([process_result], res)
 
         p._process_entity.assert_called_with({'some': 'inschrijving'}, ANY)
         call_args = p._process_entity.call_args
@@ -46,7 +48,7 @@ class TestKvkUpdateMessageProcessor(TestCase):
         p._start_workflow = MagicMock()
         mapper = MagicMock()
 
-        res = p._process_entity({'some': 'source'}, mapper)
+        res = p._process_entity({'some': 'source'}, mapper)[0]
         self.assertIsInstance(res, UpdateObject)
         self.assertEqual(res.catalogue, mapper.catalogue)
         self.assertEqual(res.collection, mapper.collection)
@@ -54,6 +56,34 @@ class TestKvkUpdateMessageProcessor(TestCase):
         mapper.get_id.assert_called_with(mapper.map.return_value)
         mapper.map.assert_called_with({'some': 'source'})
         p._start_workflow.assert_called_with(res, mapper.map.return_value, mapper)
+
+    def test_process_entity_mac(self):
+        p = KvkUpdateMessageProcessor()
+        p._start_workflow = MagicMock()
+        vestigingen_result = [MagicMock(), MagicMock()]
+        p._get_vestigingen = MagicMock(return_value=vestigingen_result)
+        mapper = MagicMock(spec=MaatschappelijkeActiviteitenMapper)
+
+        res = p._process_entity({'some': 'source'}, mapper)
+        self.assertEqual(vestigingen_result, res[1:3])
+        p._get_vestigingen.assert_called_with(mapper.get_vestigingsnummers.return_value)
+
+    @patch("gobmessage.hr.kvk.message.VestigingenMapper")
+    def test_get_vestigingen(self, mock_vestigingen_mapper):
+        p = KvkUpdateMessageProcessor()
+        vestigingnummers = [1380, 140]
+        p.dataservice = MagicMock()
+        p.dataservice.ophalen_vestiging_by_vestigingsnummer.return_value = {'product': 'vestiging'}
+        p._process_entity = MagicMock(return_value=['a'])
+
+        self.assertEqual([
+            'a', 'a'
+        ], p._get_vestigingen(vestigingnummers))
+
+        p.dataservice.ophalen_vestiging_by_vestigingsnummer.assert_has_calls([
+            call(1380),
+            call(140),
+        ])
 
     @patch("gobmessage.hr.kvk.message.start_workflow")
     def test_start_workflow(self, mock_start_workflow):

@@ -1,6 +1,40 @@
 from unittest import TestCase
 
-from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper
+from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper, VestigingenMapper
+
+
+class TestVestigingenMapper(TestCase):
+
+    def test_map(self):
+        m = VestigingenMapper()
+
+        source = {
+            'commercieleVestiging': {
+                'vestigingsnummer': 1480124014,
+                'naamgeving': {
+                    'naam': 'De Naam',
+                },
+            }
+        }
+        self.assertEqual({
+            'vestigingsnummer': 1480124014,
+            'naam': 'De Naam',
+            'is_commerciele_vestiging': True,
+        }, m.map(source))
+
+        source = {
+            'nietCommercieleVestiging': {
+                'vestigingsnummer': 1480124014,
+                'naamgeving': {
+                    'naam': 'De Naam',
+                },
+            }
+        }
+        self.assertEqual({
+            'vestigingsnummer': 1480124014,
+            'naam': 'De Naam',
+            'is_commerciele_vestiging': False,
+        }, m.map(source))
 
 
 class TestLocatiesMapper(TestCase):
@@ -442,3 +476,13 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
             self.assertTrue(
                 hasattr(MaatschappelijkeActiviteitenMapper, prop) and getattr(MaatschappelijkeActiviteitenMapper,
                                                                               prop))
+
+    def test_get_vestigingsnummers(self):
+        m = MaatschappelijkeActiviteitenMapper()
+
+        mapped_mac_entity = {
+            'wordt_uitgeoefend_in_commerciele_vestiging': [{'bronwaarde': 1}],
+            'wordt_uitgeoefend_in_niet_commerciele_vestiging': [{'bronwaarde': 2}],
+        }
+
+        self.assertEqual([1, 2], m.get_vestigingsnummers(mapped_mac_entity))

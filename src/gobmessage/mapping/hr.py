@@ -2,6 +2,24 @@ from gobmessage.mapping.mapper import Mapper
 from gobmessage.mapping.value_converter import ValueConverter
 
 
+class VestigingenMapper(Mapper):
+    catalogue = 'hr'
+    collection = 'vestigingen'
+    entity_id = 'vestigingsnummer'
+    version = '0.1'
+
+    fields = {
+        'vestigingsnummer': 'vestigingsnummer',
+        'naam': 'naamgeving.naam',
+    }
+
+    def map(self, source: dict) -> dict:
+        if source.get('commercieleVestiging'):
+            return super().map(source['commercieleVestiging']) | {'is_commerciele_vestiging': True}
+        else:
+            return super().map(source.get('nietCommercieleVestiging', {})) | {'is_commerciele_vestiging': False}
+
+
 class LocatiesMapper(Mapper):
     catalogue = 'hr'
     collection = 'locaties'
@@ -151,3 +169,8 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             'bronwaarde': 'postLocatie.volledigAdres',
         },
     }
+
+    def get_vestigingsnummers(self, mapped_mac_entity: dict) -> list[int]:
+        return [item['bronwaarde'] for item in
+                mapped_mac_entity.get('wordt_uitgeoefend_in_commerciele_vestiging', []) +
+                mapped_mac_entity.get('wordt_uitgeoefend_in_niet_commerciele_vestiging')]
