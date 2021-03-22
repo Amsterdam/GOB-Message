@@ -6,30 +6,6 @@ from gobmessage.app import KVK_MESSAGE_KEY, KVK_MESSAGE_QUEUE, MESSAGE_EXCHANGE,
 
 
 class TestApp(TestCase):
-
-    @patch("gobmessage.app.UpdateObjectRepository")
-    @patch("gobmessage.app.DatabaseSession")
-    def test_update_object_complete_handler(self, mock_session, mock_repo):
-
-        msg = {
-            'header': {
-                'catalogue': 'CAT',
-                'entity': 'ENT',
-                'entity_id': 'entity id',
-            }
-        }
-
-        res = update_object_complete_handler(msg)
-        self.assertEqual(msg, res)
-        mocked_session = mock_session.return_value.__enter__.return_value
-        mock_repo.assert_called_with(mocked_session)
-
-        mock_repo.return_value.get_active_for_entity_id.assert_called_with('CAT', 'ENT', 'entity id')
-
-        mocked_entity = mock_repo.return_value.get_active_for_entity_id.return_value
-        self.assertEqual(mock_repo.return_value.object_class.STATUS_ENDED, mocked_entity.status)
-        mock_repo.return_value.save.assert_called_with(mocked_entity)
-
     @patch("gobmessage.app.os._exit")
     @patch("gobmessage.app.messagedriven_service")
     @patch("gobmessage.app.create_queue_with_binding")
