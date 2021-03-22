@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Type
 
 
 def get_value(d: dict, key: str):
@@ -81,3 +82,22 @@ class Mapper(ABC):
 
     def get_id(self, mapped_entity: dict) -> str:
         return mapped_entity.get(self.entity_id)
+
+
+class MapperRegistry:
+    mappers = {}
+
+    @classmethod
+    def register(cls, mapper: Type[Mapper]):
+        if mapper.catalogue not in cls.mappers:
+            cls.mappers[mapper.catalogue] = {}
+        if mapper.collection in cls.mappers[mapper.catalogue]:
+            raise Exception(f"Mapper for {mapper.catalogue} {mapper.collection} already registered")
+        cls.mappers[mapper.catalogue][mapper.collection] = mapper
+
+    @classmethod
+    def get(cls, catalogue: str, collection: str):
+        try:
+            return cls.mappers[catalogue][collection]
+        except KeyError:
+            raise Exception(f"No mapper found for {catalogue} {collection}")

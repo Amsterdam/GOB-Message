@@ -1,4 +1,4 @@
-from gobmessage.mapping.mapper import Mapper
+from gobmessage.mapping.mapper import Mapper, MapperRegistry
 from gobmessage.mapping.value_converter import ValueConverter
 
 
@@ -18,6 +18,9 @@ class VestigingenMapper(Mapper):
             return super().map(source['commercieleVestiging']) | {'is_commerciele_vestiging': True}
         else:
             return super().map(source.get('nietCommercieleVestiging', {})) | {'is_commerciele_vestiging': False}
+
+
+MapperRegistry.register(VestigingenMapper)
 
 
 class LocatiesMapper(Mapper):
@@ -63,6 +66,9 @@ class LocatiesMapper(Mapper):
             'bronwaarde': (ValueConverter.filter_sps, 'adres.binnenlandsAdres.bagId.identificatieAdresseerbaarObject'),
         }
     }
+
+
+MapperRegistry.register(LocatiesMapper)
 
 
 class MaatschappelijkeActiviteitenMapper(Mapper):
@@ -174,3 +180,6 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
         return [item['bronwaarde'] for item in
                 mapped_mac_entity.get('wordt_uitgeoefend_in_commerciele_vestiging', []) +
                 mapped_mac_entity.get('wordt_uitgeoefend_in_niet_commerciele_vestiging')]
+
+
+MapperRegistry.register(MaatschappelijkeActiviteitenMapper)
