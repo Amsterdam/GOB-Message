@@ -80,7 +80,7 @@ class KvkDataService:
                 result[k] = v
         return result
 
-    def _make_request(self, action: str, **kwargs):
+    def _make_request(self, action: str, raw_response=False, **kwargs):
         """Makes a request to :action: with provided kwargs added to the request data
 
         :param action:
@@ -94,23 +94,25 @@ class KvkDataService:
             **kwargs
         }
 
-        # Strict mode does not work with the KvK DataService. _unpack_raw_elements fixes the 'not strict' result.
-        with client.settings(strict=False):
+        # Strict mode is not supported by KvK DataService
+        with client.settings(strict=False, raw_response=raw_response):
+            if raw_response:
+                return getattr(client.service, action)(**request_data).text
             return self._unpack_raw_elements(
                 serialize_object(getattr(client.service, action)(**request_data))
             )
 
-    def ophalen_inschrijving_by_kvk_nummer(self, kvk_nummer):
-        return self._make_request('ophalenInschrijving', kvkNummer=kvk_nummer)
+    def ophalen_inschrijving_by_kvk_nummer(self, kvk_nummer, raw_response=False):
+        return self._make_request('ophalenInschrijving', kvkNummer=kvk_nummer, raw_response=raw_response)
 
-    def ophalen_inschrijving_by_rsin(self, rsin):
-        return self._make_request('ophalenInschrijving', rsin=rsin)
+    def ophalen_inschrijving_by_rsin(self, rsin, raw_response=False):
+        return self._make_request('ophalenInschrijving', rsin=rsin, raw_response=raw_response)
 
-    def ophalen_vestiging_by_vestigingsnummer(self, vestigingsnummer):
-        return self._make_request('ophalenVestiging', vestigingsnummer=vestigingsnummer)
+    def ophalen_vestiging_by_vestigingsnummer(self, vestigingsnummer, raw_response=False):
+        return self._make_request('ophalenVestiging', vestigingsnummer=vestigingsnummer, raw_response=raw_response)
 
-    def ophalen_vestiging_by_kvk_nummer(self, kvk_nummer):
-        return self._make_request('ophalenVestiging', kvkNummer=kvk_nummer)
+    def ophalen_vestiging_by_kvk_nummer(self, kvk_nummer, raw_response=False):
+        return self._make_request('ophalenVestiging', kvkNummer=kvk_nummer, raw_response=raw_response)
 
-    def ophalen_vestiging_by_rsin(self, rsin):
-        return self._make_request('ophalenVestiging', rsin=rsin)
+    def ophalen_vestiging_by_rsin(self, rsin, raw_response=False):
+        return self._make_request('ophalenVestiging', rsin=rsin, raw_response=raw_response)
