@@ -113,6 +113,9 @@ class TestKvkDataService(TestCase):
         service._unpack_raw_elements.assert_called_with(mock_serialize.return_value)
         self.assertEqual(service._unpack_raw_elements.return_value, res)
 
+        res = service._make_request('someAction', raw_response=True, kwarg1='value1')
+        self.assertEqual(service._get_client().service.someAction().text, res)
+
     def test_request_methods(self):
         testcases = [
             ('ophalen_inschrijving_by_kvk_nummer', 'ophalenInschrijving', 'kvkNummer'),
@@ -132,5 +135,5 @@ class TestKvkDataService(TestCase):
 
             # Assert make_request is called with the right kwarg name and the provided argument, and the result is
             # returned
-            service._make_request.assert_called_with(action, **{kwarg_name: 'some argument'})
+            service._make_request.assert_called_with(action, raw_response=False, **{kwarg_name: 'some argument'})
             self.assertEqual(service._make_request(), res)

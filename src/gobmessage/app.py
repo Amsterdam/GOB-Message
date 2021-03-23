@@ -8,29 +8,7 @@ from gobmessage.api import get_flask_app
 from gobmessage.config import GOB_MESSAGE_PORT, KVK_MESSAGE_KEY, KVK_MESSAGE_QUEUE, MESSAGE_EXCHANGE, \
     UPDATE_OBJECT_COMPLETE_KEY, UPDATE_OBJECT_COMPLETE_QUEUE
 from gobmessage.database.connection import connect
-from gobmessage.database.repository import UpdateObjectRepository
-from gobmessage.database.session import DatabaseSession
-from gobmessage.hr.kvk.message import kvk_message_handler
-
-
-def update_object_complete_handler(msg):
-    """Callback for when an import flow started by the GOB-Message service is finished.
-
-    :param msg:
-    :return:
-    """
-
-    with DatabaseSession() as session:
-        repo = UpdateObjectRepository(session)
-        update_object = repo.get_active_for_entity_id(
-            msg['header']['catalogue'],
-            msg['header']['entity'],
-            msg['header']['entity_id']
-        )
-        update_object.status = repo.object_class.STATUS_ENDED
-        repo.save(update_object)
-
-    return msg
+from gobmessage.hr.kvk.message import kvk_message_handler, update_object_complete_handler
 
 
 SERVICEDEFINITION = {
@@ -57,7 +35,7 @@ def run_message_thread():
         messagedriven_service(SERVICEDEFINITION, "Message")
     except:  # noqa: E722 do not use bare 'except'
         pass
-    print(f"ERROR: no connection with GOB message broker, application is stopped")
+    print("ERROR: no connection with GOB message broker, application is stopped")
     os._exit(os.EX_UNAVAILABLE)
 
 

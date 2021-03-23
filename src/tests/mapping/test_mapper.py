@@ -1,6 +1,7 @@
 from unittest import TestCase
+from unittest.mock import MagicMock
 
-from gobmessage.mapping.mapper import Mapper
+from gobmessage.mapping.mapper import Mapper, MapperRegistry
 
 
 class MapperTestImpl(Mapper):
@@ -99,3 +100,18 @@ class TestMapper(TestCase):
         self.assertEqual('the id', e.get_id({'entity_id': 'the id'}))
 
 
+class TestMapperRegistry(TestCase):
+
+    def test_register_get(self):
+        mapper = MagicMock(spec=Mapper)
+        mapper.catalogue = 'cat'
+        mapper.collection = 'coll'
+
+        with self.assertRaisesRegex(Exception, "No mapper found for cat coll"):
+            MapperRegistry.get('cat', 'coll')
+        MapperRegistry.register(mapper)
+
+        self.assertEqual(mapper, MapperRegistry.get('cat', 'coll'))
+
+        with self.assertRaisesRegex(Exception, "Mapper for cat coll already registered"):
+            MapperRegistry.register(mapper)
