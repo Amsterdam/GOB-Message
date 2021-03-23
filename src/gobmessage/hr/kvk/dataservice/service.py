@@ -1,9 +1,11 @@
 import re
 import requests
+
 from datetime import datetime
 from zeep import Client
 from zeep.helpers import serialize_object
 from zeep.transports import Transport
+from zeep.cache import InMemoryCache
 
 from gobmessage.config import HR_CERTFILE, HR_KEYFILE, KVK_DATASERVICE_ADDRESS
 from gobmessage.hr.kvk.dataservice.binary_signature import KvkDataServiceBinarySignature
@@ -17,17 +19,29 @@ class KvkDataService:
 
     wsdl = 'http://schemas.kvk.nl/contracts/kvk/dataservice/catalogus/2015/02/KVK-KvKDataservice.wsdl'
 
+    cache_timeout = 15 * 60
+    operation_timeout = 5
+
+    def __init__(self):
+        self.transport = self._get_transport()
+
+    def _get_transport(self):
+        session = requests.Session()
+        session.cert = (HR_CERTFILE, HR_KEYFILE)
+
+        return Transport(session=session, cache=InMemoryCache(timeout=self.cache_timeout),
+                         operation_timeout=self.operation_timeout)
+
     def _get_client(self):
         """Returns the Zeep client, configured for use with the KvK DataService
 
         :return:
         """
-        session = requests.Session()
-        session.cert = (HR_CERTFILE, HR_KEYFILE)
-
-        transport = Transport(session=session)
-
-        client = Client(self.wsdl, wsse=KvkDataServiceBinarySignature(HR_KEYFILE, HR_CERTFILE), transport=transport)
+        client = Client(
+            wsdl=self.wsdl,
+            wsse=KvkDataServiceBinarySignature(HR_KEYFILE, HR_CERTFILE),
+            transport=self.transport
+        )
 
         # Replace the address, as the WSDL contains example.com as address.
         client.service._binding_options['address'] = KVK_DATASERVICE_ADDRESS

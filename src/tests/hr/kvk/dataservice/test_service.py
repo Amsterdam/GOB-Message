@@ -11,18 +11,20 @@ class TestKvkDataService(TestCase):
     @patch("gobmessage.hr.kvk.dataservice.service.HR_KEYFILE", 'keyfile.key')
     @patch("gobmessage.hr.kvk.dataservice.service.KVK_DATASERVICE_ADDRESS", 'https://kvkdataservice')
     @patch("gobmessage.hr.kvk.dataservice.service.requests.Session")
+    @patch("gobmessage.hr.kvk.dataservice.service.InMemoryCache")
     @patch("gobmessage.hr.kvk.dataservice.service.Transport")
     @patch("gobmessage.hr.kvk.dataservice.service.Client")
     @patch("gobmessage.hr.kvk.dataservice.service.KvkDataServiceBinarySignature")
-    def test_get_client(self, mock_signature, mock_client, mock_transport, mock_session):
+    def test_get_client(self, mock_signature, mock_client, mock_transport, mock_cache, mock_session):
         service = KvkDataService()
         mock_client.return_value.service._binding_options = {}
         res = service._get_client()
 
-        mock_transport.assert_called_with(session=mock_session())
+        mock_transport.assert_called_with(session=mock_session(), cache=mock_cache(),
+                                          operation_timeout=service.operation_timeout)
         mock_signature.assert_called_with('keyfile.key', 'certfile.crt')
         mock_client.assert_called_with(
-            'http://schemas.kvk.nl/contracts/kvk/dataservice/catalogus/2015/02/KVK-KvKDataservice.wsdl',
+            wsdl='http://schemas.kvk.nl/contracts/kvk/dataservice/catalogus/2015/02/KVK-KvKDataservice.wsdl',
             wsse=mock_signature(),
             transport=mock_transport()
         )
