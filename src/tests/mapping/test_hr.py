@@ -11,9 +11,7 @@ class TestVestigingenMapper(TestCase):
         source = {
             'commercieleVestiging': {
                 'vestigingsnummer': 1480124014,
-                'naamgeving': {
-                    'naam': 'De Naam',
-                },
+                'eersteHandelsnaam': 'De Naam',
             }
         }
         self.assertEqual({
