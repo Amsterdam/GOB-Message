@@ -52,8 +52,8 @@ class VestigingenMapper(Mapper):
         'totaal_werkzame_personen': 'totaalWerkzamePersonen',
         'voltijd_werkzame_personen': 'voltijdWerkzamePersonen',
         'deeltijd_werkzame_personen': 'deeltijdWerkzamePersonen',
-        'importeert': (ValueConverter.jn_to_bool, 'activiteiten.importeert'),
-        'exporteert': (ValueConverter.jn_to_bool, 'activiteiten.exporteert'),
+        'importeert': (ValueConverter.jn_to_bool, 'activiteiten.importeert.code'),
+        'exporteert': (ValueConverter.jn_to_bool, 'activiteiten.exporteert.code'),
         'handelt_onder_handelsnamen': {
             '_base': 'handeltOnder',
             '_list': True,
