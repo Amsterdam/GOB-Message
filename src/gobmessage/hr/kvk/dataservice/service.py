@@ -81,7 +81,9 @@ class KvkDataService:
         }
 
         # Strict mode is not supported by KvK DataService
-        with client.settings(strict=False, raw_response=raw_response):
+        # For `ophalenVestiging` `xsd_ignore_sequence_order` must be enabled,
+        # otherwise the xml response values are all mapped to `None`
+        with client.settings(strict=False, raw_response=raw_response, xsd_ignore_sequence_order=True):
             if raw_response:
                 return getattr(client.service, action)(**request_data).text
             return self._unpack_raw_elements(
