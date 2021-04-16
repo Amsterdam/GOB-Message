@@ -136,8 +136,8 @@ class TestVestigingenMapper(TestCase):
                 'totaalWerkzamePersonen': 16,
                 'activiteiten': {
                     'omschrijving': 'Dit is de omschrijving.',
-                    'importeert': 'J',
-                    'exporteert': 'N',
+                    'importeert': {'code': 'J', 'omschrijving': 'Omschr', 'referentieType': 'rt'},
+                    'exporteert': {'code': 'N', 'omschrijving': 'Omschr', 'referentieType': 'rt'},
                     'sbiActiviteit': [
                         {
                             'sbiCode': {
