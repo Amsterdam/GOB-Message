@@ -8,31 +8,274 @@ class TestVestigingenMapper(TestCase):
     def test_map(self):
         m = VestigingenMapper()
 
-        source = {
+        ves_source = {
+            'eersteHandelsnaam': 'De Naam',
+            'vestigingsnummer': '1480124014',
+            'registratie': {
+                'datumAanvang': '20181101',
+                'datumEinde': None,
+                'soortMutatie': None,
+                'registratieTijdstip': '20181101162418910',
+                'registratieTijdstipNoValue': None
+            },
+            'bezoekLocatie': {
+                'volledigAdres': 'Amstel 1 Amsterdam'
+            },
+            'postLocatie': {
+                'volledigAdres': 'Amstel 1 Amsterdam'
+            },
+            'communicatiegegevens': {
+                'extraElementen': None,
+                'communicatienummer': [
+                    {
+                        'extraElementen': None,
+                        'toegangscode': '+31',
+                        'nummer': '02099999991',
+                        'soort': {
+                            'code': 'T',
+                            'omschrijving': 'Telefoon',
+                            'referentieType': None
+                        }
+                    },
+                    {
+                        'extraElementen': None,
+                        'toegangscode': '+31',
+                        'nummer': '02099999992',
+                        'soort': {
+                            'code': 'F',
+                            'omschrijving': 'Fax',
+                            'referentieType': None
+                        }
+                    }
+                ],
+                'emailAdres': [
+                    'nepemailadres@kvk.nl',
+                    'nepemailadres2@kvk.nl',
+                ],
+                'domeinNaam': [
+                    'www1.kvk.nl',
+                    'www2.kvk.nl',
+                    'www3.kvk.nl'
+                ]
+            },
+            'isSamengevoegdMet': [
+                {
+                    'extraElementen': None,
+                    'relatieRegistratie': {
+                        'datumAanvang': '20181101',
+                        'datumEinde': None,
+                        'soortMutatie': None,
+                        'registratieTijdstip': '20181101162418910',
+                        'registratieTijdstipNoValue': None
+                    },
+                    'nietCommercieleVestiging': {
+                        'vestigingsnummer': '12344450236',
+                    }
+                },
+                {
+                    'extraElementen': None,
+                    'relatieRegistratie': {
+                        'datumAanvang': '20181101',
+                        'datumEinde': None,
+                        'soortMutatie': None,
+                        'registratieTijdstip': '20181101162418910',
+                        'registratieTijdstipNoValue': None
+                    },
+                    'commercieleVestiging': {
+                        'vestigingsnummer': '12344450237',
+                    }
+                },
+            ]
+        }
+        ves_expected = {
+            'vestigingsnummer': '1480124014',
+            'tijdstip_registratie': '2018-11-01T16:24:18.910000',
+            'datum_aanvang': '2018-11-01',
+            'datum_einde': None,
+            'datum_voortzetting': None,
+            'eerste_handelsnaam': 'De Naam',
+            'heeft_als_postadres': {'bronwaarde': 'Amstel 1 Amsterdam'},
+            'heeft_als_bezoekadres': {'bronwaarde': 'Amstel 1 Amsterdam'},
+            'communicatienummer': [
+                {
+                    'toegangscode': '+31',
+                    'nummer': '02099999991',
+                    'soort': 'Telefoon'
+                },
+                {
+                    'toegangscode': '+31',
+                    'nummer': '02099999992',
+                    'soort': 'Fax'
+                },
+            ],
+            'domeinnaam': [
+                {'naam': 'www1.kvk.nl'},
+                {'naam': 'www2.kvk.nl'},
+                {'naam': 'www3.kvk.nl'},
+            ],
+            'emailadres': [
+                {'adres': 'nepemailadres@kvk.nl'},
+                {'adres': 'nepemailadres2@kvk.nl'},
+            ],
+            'activiteiten_omschrijving': 'Dit is de omschrijving.',
+            'heeft_sbi_activiteiten': [
+                {'bronwaarde': '01133'},
+                {'bronwaarde': '01134'},
+            ],
+            'is_overgegaan_in_vestiging': [
+                {'bronwaarde': '12344450236'},
+                {'bronwaarde': '12344450237'}
+            ]
+        }
+
+        cv_source = {
             'commercieleVestiging': {
-                'vestigingsnummer': 1480124014,
-                'eersteHandelsnaam': 'De Naam',
+                **ves_source,
+                'voltijdWerkzamePersonen': 12,
+                'deeltijdWerkzamePersonen': 4,
+                'totaalWerkzamePersonen': 16,
+                'activiteiten': {
+                    'omschrijving': 'Dit is de omschrijving.',
+                    'importeert': {'code': 'J', 'omschrijving': 'Omschr', 'referentieType': 'rt'},
+                    'exporteert': {'code': 'N', 'omschrijving': 'Omschr', 'referentieType': 'rt'},
+                    'sbiActiviteit': [
+                        {
+                            'sbiCode': {
+                                'code': '01133',
+                                'omschrijving': 'Teelt van groenten in de volle grond',
+                                'referentieType': 'ActiviteitCode'
+                            },
+                        },
+                        {
+                            'sbiCode': {
+                                'code': '01134',
+                                'omschrijving': 'Teelt van groenten in de volle grond',
+                                'referentieType': 'ActiviteitCode'
+                            },
+                        }
+                    ]
+                },
+                'handeltOnder': [
+                    {
+                        'extraElementen': None,
+                        'relatieRegistratie': None,
+                        'handelsnaam': {
+                            'extraElementen': None,
+                            'registratie': {
+                                'datumAanvang': '20181101',
+                                'datumEinde': None,
+                                'soortMutatie': None,
+                                'registratieTijdstip': '20181101162418910',
+                                'registratieTijdstipNoValue': None
+                            },
+                            'naam': 'Handelsnaam 1',
+                            'volgorde': 0
+                        }
+                    },
+                    {
+                        'extraElementen': None,
+                        'relatieRegistratie': None,
+                        'handelsnaam': {
+                            'extraElementen': None,
+                            'registratie': {
+                                'datumAanvang': '20181101',
+                                'datumEinde': None,
+                                'soortMutatie': None,
+                                'registratieTijdstip': '20181101162418910',
+                                'registratieTijdstipNoValue': None
+                            },
+                            'naam': 'Handelsnaam 2',
+                            'volgorde': 1
+                        }
+                    }
+                ]
             }
         }
-        self.assertEqual({
-            'vestigingsnummer': 1480124014,
-            'naam': 'De Naam',
-            'is_commerciele_vestiging': True,
-        }, m.map(source))
 
-        source = {
+        cv_expected = {
+            **ves_expected,
+            'is_commerciele_vestiging': True,
+            'naam': None,
+            'verkorte_naam': None,
+            'ook_genoemd': None,
+            'handelt_onder_handelsnamen': [
+                {
+                    'omschrijving': 'Handelsnaam 1',
+                    'tijdstip_registratie': '2018-11-01T16:24:18.910000',
+                    'datum_aanvang_handelsnaam': '2018-11-01',
+                    'datum_einde_handelsnaam': None,
+                    'volgorde': 0
+                },
+                {
+                    'omschrijving': 'Handelsnaam 2',
+                    'tijdstip_registratie': '2018-11-01T16:24:18.910000',
+                    'datum_aanvang_handelsnaam': '2018-11-01',
+                    'datum_einde_handelsnaam': None,
+                    'volgorde': 1
+                },
+            ],
+            'totaal_werkzame_personen': 16,
+            'voltijd_werkzame_personen': 12,
+            'deeltijd_werkzame_personen': 4,
+            'importeert': True,
+            'exporteert': False,
+        }
+        self.assertEqual(cv_expected, m.map(cv_source))
+
+        ncv_source = {
             'nietCommercieleVestiging': {
-                'vestigingsnummer': 1480124014,
+                **ves_source,
                 'naamgeving': {
                     'naam': 'De Naam',
+                    'verkorteNaam': 'Naam',
+                    'ookGenoemd': 'AKA de Naam'
+                },
+                'activiteiten': {
+                    'omschrijving': 'Dit is de omschrijving.',
+                    'sbiActiviteit': [
+                        {
+                            'sbiCode': {
+                                'code': '01133',
+                                'omschrijving': 'Teelt van groenten in de volle grond',
+                                'referentieType': 'ActiviteitCode'
+                            },
+                        },
+                        {
+                            'sbiCode': {
+                                'code': '01134',
+                                'omschrijving': 'Teelt van groenten in de volle grond',
+                                'referentieType': 'ActiviteitCode'
+                            },
+                        }
+                    ]
                 },
             }
         }
-        self.assertEqual({
-            'vestigingsnummer': 1480124014,
+        ncv_expected = {
+            **ves_expected,
+            'vestigingsnummer': '1480124014',
             'naam': 'De Naam',
+            'verkorte_naam': 'Naam',
+            'ook_genoemd': 'AKA de Naam',
             'is_commerciele_vestiging': False,
-        }, m.map(source))
+            'handelt_onder_handelsnamen': [],
+            'totaal_werkzame_personen': None,
+            'voltijd_werkzame_personen': None,
+            'deeltijd_werkzame_personen': None,
+            'importeert': None,
+            'exporteert': None,
+        }
+        self.assertEqual(ncv_expected, m.map(ncv_source))
+
+    def test_properties(self):
+        """Tests properties present and set
+
+        :return:
+        """
+        props = ['catalogue', 'collection', 'entity_id', 'version', 'fields']
+
+        for prop in props:
+            self.assertTrue(hasattr(VestigingenMapper, prop) and getattr(VestigingenMapper, prop))
 
 
 class TestLocatiesMapper(TestCase):

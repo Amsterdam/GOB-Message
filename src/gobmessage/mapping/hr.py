@@ -9,8 +9,77 @@ class VestigingenMapper(Mapper):
     version = '0.1'
 
     fields = {
+        'eerste_handelsnaam': 'naamgeving.naam|eersteHandelsnaam',  # NCV | CV
         'vestigingsnummer': 'vestigingsnummer',
-        'naam': 'naamgeving.naam|eersteHandelsnaam',
+        'datum_aanvang': (ValueConverter.to_date, 'registratie.datumAanvang'),
+        'datum_einde': (ValueConverter.to_date, 'registratie.datumEinde'),
+        'datum_voortzetting': (ValueConverter.to_date, 'registratie.datumVoortzetting'),
+
+        # Locatie
+        'heeft_als_postadres': {
+            'bronwaarde': 'postLocatie.volledigAdres'
+        },
+        'heeft_als_bezoekadres': {
+            'bronwaarde': 'bezoekLocatie.volledigAdres'
+        },
+
+        # Communicatie
+        'communicatienummer': {
+            '_base': 'communicatiegegevens.communicatienummer',
+            '_list': True,
+            'nummer': 'nummer',
+            'toegangscode': 'toegangscode',
+            'soort': 'soort.omschrijving',
+        },
+        'emailadres': {
+            '_base': 'communicatiegegevens.emailAdres',
+            '_list': True,
+            'adres': '.',
+        },
+        'domeinnaam': {
+            '_base': 'communicatiegegevens.domeinNaam',
+            '_list': True,
+            'naam': '.',
+        },
+        'activiteiten_omschrijving': 'activiteiten.omschrijving',
+
+        # Niet-commerciele vestiging
+        'naam': 'naamgeving.naam',
+        'verkorte_naam': 'naamgeving.verkorteNaam',  # niet in xsd
+        'ook_genoemd': 'naamgeving.ookGenoemd',
+
+        # Commerciele vestiging
+        'totaal_werkzame_personen': 'totaalWerkzamePersonen',
+        'voltijd_werkzame_personen': 'voltijdWerkzamePersonen',
+        'deeltijd_werkzame_personen': 'deeltijdWerkzamePersonen',
+        'importeert': (ValueConverter.jn_to_bool, 'activiteiten.importeert.code'),
+        'exporteert': (ValueConverter.jn_to_bool, 'activiteiten.exporteert.code'),
+        'handelt_onder_handelsnamen': {
+            '_base': 'handeltOnder',
+            '_list': True,
+            'omschrijving': 'handelsnaam.naam',
+            'tijdstip_registratie': (ValueConverter.to_datetime, 'handelsnaam.registratie.registratieTijdstip'),
+            'datum_aanvang_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumAanvang'),
+            'datum_einde_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumEinde'),
+            'volgorde': 'handelsnaam.volgorde',
+        },
+
+        # Activiteiten CV / NCV
+        'heeft_sbi_activiteiten': {
+            '_list': True,
+            '_base': 'activiteiten.sbiActiviteit',
+            'bronwaarde': 'sbiCode.code',
+        },
+
+        # Samenvoeging vestigingen
+        'is_overgegaan_in_vestiging': {
+            '_list': True,
+            '_base': 'isSamengevoegdMet',
+            'bronwaarde': 'commercieleVestiging.vestigingsnummer|nietCommercieleVestiging.vestigingsnummer'
+        },
+
+        # Registratie
+        'tijdstip_registratie': (ValueConverter.to_datetime, 'registratie.registratieTijdstip'),
     }
 
     def map(self, source: dict) -> dict:
