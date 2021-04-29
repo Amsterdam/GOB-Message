@@ -94,6 +94,11 @@ class VestigingenMapper(Mapper):
         else:
             return super().map(source.get('nietCommercieleVestiging', {})) | {'is_commerciele_vestiging': False}
 
+    def get_locaties(self, source: dict) -> list[dict]:
+        keys = ['bezoekLocatie', 'postLocatie']
+        res = source.get('commercieleVestiging') or source.get('nietCommercieleVestiging', {})
+        return [res[key] for key in keys if res[key] is not None]
+
 
 MapperRegistry.register(VestigingenMapper)
 
