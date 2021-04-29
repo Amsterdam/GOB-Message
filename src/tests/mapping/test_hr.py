@@ -306,82 +306,12 @@ class TestVestigingenMapper(TestCase):
             'nietCommercieleVestiging': {
                 'vestigingsnummer': '12345',
                 'bezoekLocatie': {
-                    'extraElementen': None,
-                    'registratie': {
-                        'datumAanvang': '20101101',
-                        'datumEinde': None,
-                        'soortMutatie': None,
-                        'registratieTijdstip': '20101122135308839',
-                        'registratieTijdstipNoValue': None},
-                    'toevoegingAdres': None,
-                    'afgeschermd': {
-                        'code': 'N',
-                        'omschrijving': 'Nee',
-                        'referentieType': 'geenRT'
-                    },
-                    'adres': {
-                        'binnenlandsAdres': {
-                            'extraElementen': None,
-                            'straatnaam': 'straat',
-                            'aanduidingBijHuisnummer': None,
-                            'huisnummer': 6,
-                            'huisnummerToevoeging': None,
-                            'huisletter': None,
-                            'postbusnummer': None,
-                            'postcode': {
-                                'cijfercombinatie': '1234',
-                                'lettercombinatie': 'TM'},
-                            'plaats': 'Rotterdam',
-                            'bagId': {
-                                'identificatieNummeraanduiding': '12345',
-                                'identificatieAdresseerbaarObject': '12345'
-                            }
-                        },
-                        'buitenlandsAdres': None
-                    },
                     'volledigAdres': 'Volledig adres 5 Amsterdam'
                 },
                 'postLocatie': None
             }
         }
-        expected = [
-            {
-                'extraElementen': None,
-                'registratie': {
-                    'datumAanvang': '20101101',
-                    'datumEinde': None,
-                    'soortMutatie': None,
-                    'registratieTijdstip': '20101122135308839',
-                    'registratieTijdstipNoValue': None},
-                'toevoegingAdres': None,
-                'afgeschermd': {
-                    'code': 'N',
-                    'omschrijving': 'Nee',
-                    'referentieType': 'geenRT'
-                },
-                'adres': {
-                    'binnenlandsAdres': {
-                        'extraElementen': None,
-                        'straatnaam': 'straat',
-                        'aanduidingBijHuisnummer': None,
-                        'huisnummer': 6,
-                        'huisnummerToevoeging': None,
-                        'huisletter': None,
-                        'postbusnummer': None,
-                        'postcode': {
-                            'cijfercombinatie': '1234',
-                            'lettercombinatie': 'TM'},
-                        'plaats': 'Rotterdam',
-                        'bagId': {
-                            'identificatieNummeraanduiding': '12345',
-                            'identificatieAdresseerbaarObject': '12345'
-                        }
-                    },
-                    'buitenlandsAdres': None
-                },
-                'volledigAdres': 'Volledig adres 5 Amsterdam'
-            }
-        ]
+        expected = [{'volledigAdres': 'Volledig adres 5 Amsterdam'}]
         locs = VestigingenMapper().get_locaties(src)
         self.assertEqual(locs, expected)
 
