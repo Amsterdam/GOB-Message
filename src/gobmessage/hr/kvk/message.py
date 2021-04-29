@@ -66,16 +66,22 @@ class KvkUpdateMessageProcessor:
 
         if isinstance(mapper, MaatschappelijkeActiviteitenMapper):
             update_objects += self._get_vestigingen(mapper.get_vestigingsnummers(mapped_entity))
+        elif isinstance(mapper, VestigingenMapper):
+            update_objects += self._get_locaties(mapper.get_locaties(source))
 
         return update_objects
 
-    def _get_vestigingen(self, vestigingnummers: list[int]):
+    def _get_vestigingen(self, vestigingnummers: list[int]) -> list[UpdateObject]:
         res = []
         mapper = VestigingenMapper()
         for vestigingnummer in vestigingnummers:
             vestiging = self.dataservice.ophalen_vestiging_by_vestigingsnummer(vestigingnummer)
             res += self._process_entity(vestiging['product'], mapper)
         return res
+
+    def _get_locaties(self, locaties: list) -> list[UpdateObject]:
+        mapper = LocatiesMapper()
+        return [update_obj for loc in locaties for update_obj in self._process_entity(loc, mapper)]
 
 
 def start_update_object_workflow(update_object: UpdateObject):

@@ -6,6 +6,7 @@ from freezegun import freeze_time
 from gobmessage.hr.kvk.message import (IMPORT_OBJECT, KvkUpdateMessage, KvkUpdateMessageProcessor, MESSAGE_EXCHANGE,
                                        UPDATE_OBJECT_COMPLETE_KEY, UpdateObject, kvk_message_handler,
                                        MaatschappelijkeActiviteitenMapper, start_update_object_workflow, MapperRegistry, update_object_complete_handler)
+from gobmessage.mapping.hr import VestigingenMapper
 from gobmessage.mapping.mapper import Mapper
 
 
@@ -60,13 +61,24 @@ class TestKvkUpdateMessageProcessor(TestCase):
     def test_process_entity_mac(self):
         p = KvkUpdateMessageProcessor(MagicMock())
         p._start_workflow = MagicMock()
-        vestigingen_result = [MagicMock(), MagicMock()]
-        p._get_vestigingen = MagicMock(return_value=vestigingen_result)
-        mapper = MagicMock(spec=MaatschappelijkeActiviteitenMapper)
 
-        res = p._process_entity({'some': 'source'}, mapper)
+        vestigingen_result = [MagicMock(), MagicMock()]
+        locaties_result = [MagicMock()]
+        p._get_vestigingen = MagicMock(return_value=vestigingen_result)
+        p._get_locaties = MagicMock(return_value=locaties_result)
+
+        mapper = MagicMock(spec=MaatschappelijkeActiviteitenMapper)
+        mapper_ves = MagicMock(spec=VestigingenMapper)
+
+        source = {'some': 'source'}
+        res = p._process_entity(source, mapper)
+        res_loc = p._process_entity(source, mapper_ves)
+
         self.assertEqual(vestigingen_result, res[1:3])
+        self.assertEqual(locaties_result, res_loc[1:])
+
         p._get_vestigingen.assert_called_with(mapper.get_vestigingsnummers.return_value)
+        p._get_locaties.assert_called_with(mapper_ves.get_locaties.return_value)
 
     @patch("gobmessage.hr.kvk.message.VestigingenMapper")
     def test_get_vestigingen(self, mock_vestigingen_mapper):
@@ -83,6 +95,23 @@ class TestKvkUpdateMessageProcessor(TestCase):
         p.dataservice.ophalen_vestiging_by_vestigingsnummer.assert_has_calls([
             call(1380),
             call(140),
+        ])
+
+    @patch("gobmessage.hr.kvk.message.LocatiesMapper")
+    def test_get_locaties(self, mock_locaties_mapper):
+        p = KvkUpdateMessageProcessor(MagicMock())
+        values = [{'volledig_adres': 'adres'}, {'volledig_adres': 'adres'}]
+
+        p._process_entity = MagicMock(return_value=['a'])
+        mock_locaties_mapper.return_value = 'locatie_mapper'
+
+        src = p._get_locaties(values)
+        expected = ['a', 'a']
+        self.assertEqual(src, expected)
+
+        p._process_entity.assert_has_calls([
+            call({'volledig_adres': 'adres'}, 'locatie_mapper'),
+            call({'volledig_adres': 'adres'}, 'locatie_mapper')
         ])
 
 

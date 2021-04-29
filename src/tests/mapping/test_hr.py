@@ -188,7 +188,21 @@ class TestVestigingenMapper(TestCase):
                             'volgorde': 1
                         }
                     }
-                ]
+                ],
+                'isEenUitoefeningVan': {
+                    'onderneming': {
+                        'extraElementen': None,
+                        'registratie': {'datumAanvang': '19970616', 'datumEinde': None},
+                        'kvkNummer': None,
+                        'isEenManifestatieVan': {
+                            'maatschappelijkeActiviteit': {
+                                'extraElementen': None,
+                                'kvkNummer': '90000250',
+                                'naam': 'De naam'
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -219,6 +233,7 @@ class TestVestigingenMapper(TestCase):
             'deeltijd_werkzame_personen': 4,
             'importeert': True,
             'exporteert': False,
+            'is_een_uitoefening_van': {'bronwaarde': '90000250'}
         }
         self.assertEqual(cv_expected, m.map(cv_source))
 
@@ -249,6 +264,13 @@ class TestVestigingenMapper(TestCase):
                         }
                     ]
                 },
+                'isEenUitoefeningVan': {
+                    'maatschappelijkeActiviteit': {
+                        'extraElementen': None,
+                        'kvkNummer': '90000633',
+                        'naam': 'De naam'
+                    }
+                }
             }
         }
         ncv_expected = {
@@ -264,6 +286,7 @@ class TestVestigingenMapper(TestCase):
             'deeltijd_werkzame_personen': None,
             'importeert': None,
             'exporteert': None,
+            'is_een_uitoefening_van': {'bronwaarde': '90000633'}
         }
         self.assertEqual(ncv_expected, m.map(ncv_source))
 
@@ -276,6 +299,21 @@ class TestVestigingenMapper(TestCase):
 
         for prop in props:
             self.assertTrue(hasattr(VestigingenMapper, prop) and getattr(VestigingenMapper, prop))
+
+    def test_get_locaties(self):
+        src = {
+            'commercieleVestiging': None,
+            'nietCommercieleVestiging': {
+                'vestigingsnummer': '12345',
+                'bezoekLocatie': {
+                    'volledigAdres': 'Volledig adres 5 Amsterdam'
+                },
+                'postLocatie': None
+            }
+        }
+        expected = [{'volledigAdres': 'Volledig adres 5 Amsterdam'}]
+        locs = VestigingenMapper().get_locaties(src)
+        self.assertEqual(locs, expected)
 
 
 class TestLocatiesMapper(TestCase):

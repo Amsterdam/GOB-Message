@@ -80,6 +80,12 @@ class VestigingenMapper(Mapper):
 
         # Registratie
         'tijdstip_registratie': (ValueConverter.to_datetime, 'registratie.registratieTijdstip'),
+
+        'is_een_uitoefening_van': {
+            'bronwaarde':
+                'isEenUitoefeningVan.maatschappelijkeActiviteit.kvkNummer|'
+                'isEenUitoefeningVan.onderneming.isEenManifestatieVan.maatschappelijkeActiviteit.kvkNummer'
+        }
     }
 
     def map(self, source: dict) -> dict:
@@ -87,6 +93,11 @@ class VestigingenMapper(Mapper):
             return super().map(source['commercieleVestiging']) | {'is_commerciele_vestiging': True}
         else:
             return super().map(source.get('nietCommercieleVestiging', {})) | {'is_commerciele_vestiging': False}
+
+    def get_locaties(self, source: dict) -> list[dict]:
+        keys = ['bezoekLocatie', 'postLocatie']
+        res = source.get('commercieleVestiging') or source.get('nietCommercieleVestiging', {})
+        return [res[key] for key in keys if res[key] is not None]
 
 
 MapperRegistry.register(VestigingenMapper)
