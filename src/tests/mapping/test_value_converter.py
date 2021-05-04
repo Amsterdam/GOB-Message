@@ -23,6 +23,24 @@ class TestValueConverter(TestCase):
         for input, expected in testcases:
             self.assertEqual(expected, ValueConverter.to_date(input))
 
+    def test_to_incomplete_date(self):
+        testcases = [
+            ('00000000', '0000-00-00'),
+            ('20000000', '2000-00-00'),
+            ('20001000', '2000-10-00'),
+            ('20001010', '2000-10-10'),
+            ('20200504', '2020-05-04'),
+            (None, None)
+        ]
+        testcases_raise = ['00001000', '00000010', '12345678', '00001002']
+
+        for input, expected in testcases:
+            self.assertEqual(expected, ValueConverter.to_incomplete_date(input))
+
+        for test in testcases_raise:
+            with self.assertRaises(ValueError):
+                ValueConverter.to_incomplete_date(test)
+
     def test_to_datetime(self):
         testcases = [
             ('20181101162418910', '2018-11-01T16:24:18.910000'),

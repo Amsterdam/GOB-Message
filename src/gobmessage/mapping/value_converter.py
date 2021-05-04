@@ -23,6 +23,45 @@ class ValueConverter:
         return d.strftime("%Y-%m-%d")
 
     @staticmethod
+    def _parse_incomplete_date(value: str) -> str:
+        year, month, day = value[:4], value[4:6], value[6:8]
+
+        if year == '0000' and month == '00' and day == '00':
+            d = f'0000-00-00'
+        elif month == '00' and day == '00':
+            d = datetime.datetime.strptime(year, "%Y")
+            d = d.strftime("%Y-00-00")
+        elif day == '00':
+            d = datetime.datetime.strptime(year + month, "%Y%m")
+            d = d.strftime("%Y-%m-00")
+        else:
+            raise ValueError(f"Can not parse incomplete date: '{value}'")
+
+        return d
+
+    @staticmethod
+    def to_incomplete_date(value: str):
+        """
+        De mogelijke waarden van (incomplete) datum zijn:
+         - jjjjmmdd volledige datum
+         - jjjjmm00 dag onbekend
+         - jjjj0000 maand onbekend
+         - 00000000 datum onbekend
+
+        :param value: string
+        :return:
+        """
+        if value is None:
+            return None
+
+        try:
+            date = ValueConverter.to_date(value)
+        except ValueError:
+            date = ValueConverter._parse_incomplete_date(value)
+
+        return date
+
+    @staticmethod
     def to_datetime(value: str):
         """
 
