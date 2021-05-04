@@ -27,7 +27,7 @@ class ValueConverter:
         year, month, day = value[:4], value[4:6], value[6:8]
 
         if year == '0000' and month == '00' and day == '00':
-            d = f'0000-00-00'
+            d = '0000-00-00'
         elif month == '00' and day == '00':
             d = datetime.datetime.strptime(year, "%Y")
             d = d.strftime("%Y-00-00")
