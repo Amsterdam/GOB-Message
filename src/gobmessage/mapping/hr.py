@@ -11,13 +11,13 @@ class VestigingenMapper(Mapper):
     fields = {
         'eerste_handelsnaam': 'naamgeving.naam|eersteHandelsnaam',  # NCV | CV
         'vestigingsnummer': 'vestigingsnummer',
-        'datum_aanvang': (ValueConverter.to_date, 'registratie.datumAanvang'),
-        'datum_einde': (ValueConverter.to_date, 'registratie.datumEinde'),
-        'datum_voortzetting': (ValueConverter.to_date, 'registratie.datumVoortzetting'),
+        'datum_aanvang': (ValueConverter.to_incomplete_date, 'registratie.datumAanvang'),
+        'datum_einde': (ValueConverter.to_incomplete_date, 'registratie.datumEinde'),
+        'datum_voortzetting': (ValueConverter.to_incomplete_date, 'registratie.datumVoortzetting'),
 
         # Locatie
         'heeft_als_postadres': {
-            'bronwaarde': 'postLocatie.volledigAdres'
+            'bronwaarde': 'postLocatie.volledigAdres',
         },
         'heeft_als_bezoekadres': {
             'bronwaarde': 'bezoekLocatie.volledigAdres'
@@ -59,8 +59,8 @@ class VestigingenMapper(Mapper):
             '_list': True,
             'omschrijving': 'handelsnaam.naam',
             'tijdstip_registratie': (ValueConverter.to_datetime, 'handelsnaam.registratie.registratieTijdstip'),
-            'datum_aanvang_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumAanvang'),
-            'datum_einde_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumEinde'),
+            'datum_aanvang_handelsnaam': (ValueConverter.to_incomplete_date, 'handelsnaam.registratie.datumAanvang'),
+            'datum_einde_handelsnaam': (ValueConverter.to_incomplete_date, 'handelsnaam.registratie.datumEinde'),
             'volgorde': 'handelsnaam.volgorde',
         },
 
@@ -114,8 +114,8 @@ class LocatiesMapper(Mapper):
         'volgnummer': '=1',
         'volledig_adres': 'volledigAdres',
         'tijdstip_registratie': (ValueConverter.to_datetime, 'registratie.registratieTijdstip'),
-        'datum_aanvang': (ValueConverter.to_date, 'registratie.datumAanvang'),
-        'datum_einde': (ValueConverter.to_date, 'registratie.datumEinde'),
+        'datum_aanvang': (ValueConverter.to_incomplete_date, 'registratie.datumAanvang'),
+        'datum_einde': (ValueConverter.to_incomplete_date, 'registratie.datumEinde'),
         'afgeschermd': (ValueConverter.jn_to_bool, 'afgeschermd.code'),
         'toevoeging_adres': 'toevoegingAdres',
         'straatnaam': 'adres.binnenlandsAdres.straatnaam',
@@ -165,11 +165,11 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             'nonMailing.code'
         ),
         'datum_aanvang_maatschappelijke_activiteit': (
-            ValueConverter.to_date,
+            ValueConverter.to_incomplete_date,
             'registratie.datumAanvang'
         ),
         'datum_einde_maatschappelijke_activiteit': (
-            ValueConverter.to_date,
+            ValueConverter.to_incomplete_date,
             'registratie.datumEinde'
         ),
         'registratie_tijdstip_maatschappelijke_activiteit': (
@@ -202,11 +202,11 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             'manifesteertZichAls.onderneming.registratie.registratieTijdstip'
         ),
         'datum_aanvang_onderneming': (
-            ValueConverter.to_date,
+            ValueConverter.to_incomplete_date,
             'manifesteertZichAls.onderneming.registratie.datumAanvang'
         ),
         'datum_einde_onderneming': (
-            ValueConverter.to_date,
+            ValueConverter.to_incomplete_date,
             'manifesteertZichAls.onderneming.registratie.datumEinde'
         ),
         'totaal_werkzame_personen':
@@ -220,8 +220,8 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
             '_list': True,
             'omschrijving': 'handelsnaam.naam',
             'tijdstip_registratie': (ValueConverter.to_datetime, 'handelsnaam.registratie.registratieTijdstip'),
-            'datum_aanvang_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumAanvang'),
-            'datum_einde_handelsnaam': (ValueConverter.to_date, 'handelsnaam.registratie.datumEinde'),
+            'datum_aanvang_handelsnaam': (ValueConverter.to_incomplete_date, 'handelsnaam.registratie.datumAanvang'),
+            'datum_einde_handelsnaam': (ValueConverter.to_incomplete_date, 'handelsnaam.registratie.datumEinde'),
             'volgorde': 'handelsnaam.volgorde',
         },
         'heeft_hoofdvestiging': {
