@@ -1,4 +1,5 @@
 import datetime
+import re
 
 
 class ValueConverter:
@@ -24,20 +25,12 @@ class ValueConverter:
 
     @staticmethod
     def _parse_incomplete_date(value: str) -> str:
-        year, month, day = value[:4], value[4:6], value[6:8]
+        match = re.match(r"^(\d{4})(\d{2})(\d{2})$", value)
 
-        if year == '0000' and month == '00' and day == '00':
-            d = '0000-00-00'
-        elif month == '00' and day == '00':
-            d = datetime.datetime.strptime(year, "%Y")
-            d = d.strftime("%Y-00-00")
-        elif day == '00':
-            d = datetime.datetime.strptime(year + month, "%Y%m")
-            d = d.strftime("%Y-%m-00")
-        else:
+        if not match:
             raise ValueError(f"Can not parse incomplete date: '{value}'")
 
-        return d
+        return '-'.join(match.groups())
 
     @staticmethod
     def to_incomplete_date(value: str):
@@ -51,9 +44,6 @@ class ValueConverter:
         :param value: string
         :return:
         """
-        if value is None:
-            return None
-
         try:
             date = ValueConverter.to_date(value)
         except ValueError:
