@@ -32,7 +32,7 @@ class TestValueConverter(TestCase):
             ('20200504', '2020-05-04'),
             (None, None)
         ]
-        testcases_raise = ['00001000', '00000010', '12345678', '00001002']
+        testcases_raise = ['0000', '000000000']
 
         for input, expected in testcases:
             self.assertEqual(expected, ValueConverter.to_incomplete_date(input))
