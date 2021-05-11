@@ -11,13 +11,6 @@ class TestVestigingenMapper(TestCase):
         ves_source = {
             'eersteHandelsnaam': 'De Naam',
             'vestigingsnummer': '1480124014',
-            'registratie': {
-                'datumAanvang': '20181101',
-                'datumEinde': None,
-                'soortMutatie': None,
-                'registratieTijdstip': '20181101162418910',
-                'registratieTijdstipNoValue': None
-            },
             'bezoekLocatie': {
                 'volledigAdres': 'Amstel 1 Amsterdam'
             },
@@ -85,14 +78,20 @@ class TestVestigingenMapper(TestCase):
                         'vestigingsnummer': '12344450237',
                     }
                 },
-            ]
+            ],
+            'isOvergenomenVan': {
+                'datumVoortzetting': None
+            },
+            'isOvergedragenNaar': {
+                'datumVoortzetting': '20201010'
+            }
         }
         ves_expected = {
             'vestigingsnummer': '1480124014',
             'tijdstip_registratie': '2018-11-01T16:24:18.910000',
             'datum_aanvang': '2018-11-01',
             'datum_einde': None,
-            'datum_voortzetting': None,
+            'datum_voortzetting': '2020-10-10',
             'eerste_handelsnaam': 'De Naam',
             'heeft_als_postadres': {'bronwaarde': 'Amstel 1 Amsterdam'},
             'heeft_als_bezoekadres': {'bronwaarde': 'Amstel 1 Amsterdam'},
@@ -131,6 +130,13 @@ class TestVestigingenMapper(TestCase):
         cv_source = {
             'commercieleVestiging': {
                 **ves_source,
+                'registratie': {
+                    'datumAanvang': '20181101',
+                    'datumEinde': None,
+                    'soortMutatie': None,
+                    'registratieTijdstip': '20181101162418910',
+                    'registratieTijdstipNoValue': None
+                },
                 'voltijdWerkzamePersonen': 12,
                 'deeltijdWerkzamePersonen': 4,
                 'totaalWerkzamePersonen': 16,
@@ -243,7 +249,14 @@ class TestVestigingenMapper(TestCase):
                 'naamgeving': {
                     'naam': 'De Naam',
                     'verkorteNaam': 'Naam',
-                    'ookGenoemd': 'AKA de Naam'
+                    'ookGenoemd': 'AKA de Naam',
+                    'registratie': {
+                        'datumAanvang': '20181101',
+                        'datumEinde': None,
+                        'soortMutatie': None,
+                        'registratieTijdstip': '20181101162418910',
+                        'registratieTijdstipNoValue': None
+                    }
                 },
                 'activiteiten': {
                     'omschrijving': 'Dit is de omschrijving.',
