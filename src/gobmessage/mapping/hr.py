@@ -9,11 +9,18 @@ class VestigingenMapper(Mapper):
     version = '0.1'
 
     fields = {
-        'eerste_handelsnaam': 'naamgeving.naam|eersteHandelsnaam',  # NCV | CV
+        'eerste_handelsnaam': 'eersteHandelsnaam|naamgeving.naam',  # NCV | CV
         'vestigingsnummer': 'vestigingsnummer',
-        'datum_aanvang': (ValueConverter.to_incomplete_date, 'registratie.datumAanvang'),
-        'datum_einde': (ValueConverter.to_incomplete_date, 'registratie.datumEinde'),
-        'datum_voortzetting': (ValueConverter.to_incomplete_date, 'registratie.datumVoortzetting'),
+
+        # Registratie
+        'tijdstip_registratie': (ValueConverter.to_datetime,
+                                 'registratie.registratieTijdstip|naamgeving.registratie.registratieTijdstip'),
+        'datum_aanvang': (ValueConverter.to_incomplete_date,
+                          'registratie.datumAanvang|naamgeving.registratie.datumAanvang'),
+        'datum_einde': (ValueConverter.to_incomplete_date,
+                        'registratie.datumEinde|naamgeving.registratie.datumEinde'),
+        'datum_voortzetting': (ValueConverter.to_incomplete_date,
+                               'isOvergenomenVan.datumVoortzetting|isOvergedragenNaar.datumVoortzetting'),
 
         # Locatie
         'heeft_als_postadres': {
@@ -77,9 +84,6 @@ class VestigingenMapper(Mapper):
             '_base': 'isSamengevoegdMet',
             'bronwaarde': 'commercieleVestiging.vestigingsnummer|nietCommercieleVestiging.vestigingsnummer'
         },
-
-        # Registratie
-        'tijdstip_registratie': (ValueConverter.to_datetime, 'registratie.registratieTijdstip'),
 
         'is_een_uitoefening_van': {
             'bronwaarde':
