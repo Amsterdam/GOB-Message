@@ -1,4 +1,5 @@
 import datetime
+import re
 
 
 class ValueConverter:
@@ -21,6 +22,34 @@ class ValueConverter:
             return None
         d = datetime.datetime.strptime(value, "%Y%m%d")
         return d.strftime("%Y-%m-%d")
+
+    @staticmethod
+    def _parse_incomplete_date(value: str) -> str:
+        match = re.match(r"^(\d{4})(\d{2})(\d{2})$", value)
+
+        if not match:
+            raise ValueError(f"Can not parse incomplete date: '{value}'")
+
+        return '-'.join(match.groups())
+
+    @staticmethod
+    def to_incomplete_date(value: str):
+        """
+        De mogelijke waarden van (incomplete) datum zijn:
+         - jjjjmmdd volledige datum
+         - jjjjmm00 dag onbekend
+         - jjjj0000 maand onbekend
+         - 00000000 datum onbekend
+
+        :param value: string
+        :return:
+        """
+        try:
+            date = ValueConverter.to_date(value)
+        except ValueError:
+            date = ValueConverter._parse_incomplete_date(value)
+
+        return date
 
     @staticmethod
     def to_datetime(value: str):

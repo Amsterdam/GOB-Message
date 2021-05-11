@@ -1,6 +1,6 @@
 flake8==3.9.0
 Flask==1.1.2
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 freezegun==1.0.0
 -e git+https://github.com/Amsterdam/GOB-Core.git@v0.17.11s#egg=gobcore
 pytest==3.6.3
