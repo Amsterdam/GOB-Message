@@ -19,7 +19,7 @@ class VestigingenMapper(Mapper):
                           'registratie.datumAanvang|naamgeving.registratie.datumAanvang'),
         'datum_einde': (ValueConverter.to_incomplete_date,
                         'registratie.datumEinde|naamgeving.registratie.datumEinde'),
-        
+
         # CV & NCV
         'datum_voortzetting': (ValueConverter.to_incomplete_date,
                                'isOvergenomenVan.datumVoortzetting|isOvergedragenNaar.datumVoortzetting'),
