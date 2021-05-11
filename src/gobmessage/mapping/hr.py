@@ -9,16 +9,18 @@ class VestigingenMapper(Mapper):
     version = '0.1'
 
     fields = {
-        'eerste_handelsnaam': 'eersteHandelsnaam|naamgeving.naam',  # NCV | CV
+        'eerste_handelsnaam': 'eersteHandelsnaam|naamgeving.naam',  # CV | NCV
         'vestigingsnummer': 'vestigingsnummer',
 
-        # Registratie
+        # Registratie CV | NCV
         'tijdstip_registratie': (ValueConverter.to_datetime,
                                  'registratie.registratieTijdstip|naamgeving.registratie.registratieTijdstip'),
         'datum_aanvang': (ValueConverter.to_incomplete_date,
                           'registratie.datumAanvang|naamgeving.registratie.datumAanvang'),
         'datum_einde': (ValueConverter.to_incomplete_date,
                         'registratie.datumEinde|naamgeving.registratie.datumEinde'),
+        
+        # CV & NCV
         'datum_voortzetting': (ValueConverter.to_incomplete_date,
                                'isOvergenomenVan.datumVoortzetting|isOvergedragenNaar.datumVoortzetting'),
 
