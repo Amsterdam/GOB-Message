@@ -9,7 +9,8 @@ from gobmessage.database.repository import KvkUpdateMessageRepository, UpdateObj
 from gobmessage.database.session import DatabaseSession
 from gobmessage.hr.kvk.dataservice.service import KvkDataService
 from gobmessage.mapping.mapper import Mapper, MapperRegistry
-from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper, VestigingenMapper
+from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper, VestigingenMapper, \
+    SbiActiviteitenMapper
 
 
 class KvkUpdateMessageProcessor:
@@ -19,6 +20,8 @@ class KvkUpdateMessageProcessor:
         'maatschappelijkeActiviteit': MaatschappelijkeActiviteitenMapper,
         'maatschappelijkeActiviteit.postLocatie': LocatiesMapper,
         'maatschappelijkeActiviteit.bezoekLocatie': LocatiesMapper,
+        'maatschappelijkeActiviteit.sbiActiviteit': SbiActiviteitenMapper,
+        'maatschappelijkeActiviteit.manifesteertZichAls.onderneming.sbiActiviteit': SbiActiviteitenMapper
     }
 
     def __init__(self, message: KvkUpdateMessage):
@@ -48,7 +51,10 @@ class KvkUpdateMessageProcessor:
             base = self._get_base(base_path, inschrijving)
 
             if base:
-                res += self._process_entity(base, mapper())
+                if not isinstance(base, list):
+                    base = [base]
+
+                res += [obj for b in base for obj in self._process_entity(b, mapper())]
         return res
 
     def _process_entity(self, source: dict, mapper: Mapper) -> list[UpdateObject]:
@@ -68,20 +74,27 @@ class KvkUpdateMessageProcessor:
             update_objects += self._get_vestigingen(mapper.get_vestigingsnummers(mapped_entity))
         elif isinstance(mapper, VestigingenMapper):
             update_objects += self._get_locaties(mapper.get_locaties(source))
+            update_objects += self._get_activites(mapper.get_activities(source))
 
         return update_objects
 
     def _get_vestigingen(self, vestigingnummers: list[int]) -> list[UpdateObject]:
         res = []
         mapper = VestigingenMapper()
+
         for vestigingnummer in vestigingnummers:
             vestiging = self.dataservice.ophalen_vestiging_by_vestigingsnummer(vestigingnummer)
             res += self._process_entity(vestiging['product'], mapper)
+
         return res
 
     def _get_locaties(self, locaties: list) -> list[UpdateObject]:
         mapper = LocatiesMapper()
         return [update_obj for loc in locaties for update_obj in self._process_entity(loc, mapper)]
+
+    def _get_activites(self, activities: list) -> list[UpdateObject]:
+        mapper = SbiActiviteitenMapper()
+        return [update_obj for act in activities for update_obj in self._process_entity(act, mapper)]
 
 
 def start_update_object_workflow(update_object: UpdateObject):
