@@ -54,11 +54,16 @@ class TestUpdateObjectRepository(TestCase):
         session = MagicMock()
         u = UpdateObjectRepository(session)
 
-        res = u.get_active_for_entity_id('cat', 'coll', 'entity_id')
-        self.assertEqual(session.query.return_value.filter_by.return_value.order_by.return_value.first.return_value, res)
+        res = u.get_active_for_entity_id(0, 'cat', 'coll', 'entity_id')
+        self.assertEqual(session.query.return_value.filter_by.return_value.first.return_value, res)
         session.assert_has_calls([
             call.query(UpdateObject),
-            call.query().filter_by(catalogue='cat', collection='coll', entity_id='entity_id', status=UpdateObject.STATUS_STARTED),
-            call.query().filter_by().order_by(UpdateObject.created_at),
-            call.query().filter_by().order_by().first(),
+            call.query().filter_by(
+                update_message_id=0,
+                catalogue='cat',
+                collection='coll',
+                entity_id='entity_id',
+                status=UpdateObject.STATUS_STARTED
+            ),
+            call.query().filter_by().first()
         ])

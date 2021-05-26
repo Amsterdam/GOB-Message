@@ -117,8 +117,11 @@ class TestKvkUpdateMessageProcessor(TestCase):
 
 class TestMessage(TestCase):
 
+    @patch('gobmessage.database.model.KvkUpdateMessage')
     @patch("gobmessage.hr.kvk.message.start_workflow")
-    def test_start_workflow(self, mock_start_workflow):
+    def test_start_workflow(self, mock_start_workflow, mock_update_message):
+        mock_update_message.id = 0
+
         update_object = UpdateObject()
         update_object.catalogue = 'the cat'
         update_object.collection = 'the coll'
@@ -126,6 +129,7 @@ class TestMessage(TestCase):
         update_object.mapped_entity = {'some': 'entity'}
         update_object.application = 'the application'
         update_object.source = 'the source'
+        update_object.update_message = mock_update_message
 
         mapper = MagicMock(spec=Mapper)
         mapper.catalogue = 'the cat'
@@ -139,6 +143,7 @@ class TestMessage(TestCase):
             'workflow_name': IMPORT_OBJECT,
         }, {
             'header': {
+                'message_id': 0,
                 'catalogue': 'the cat',
                 'entity': 'the coll',
                 'collection': 'the coll',
@@ -201,6 +206,7 @@ class TestMessage(TestCase):
                 'catalogue': 'CAT',
                 'entity': 'ENT',
                 'entity_id': 'entity id',
+                'message_id': 0
             }
         }
         mapper = MagicMock(spec=Mapper)
@@ -213,7 +219,7 @@ class TestMessage(TestCase):
         mocked_session = mock_session.return_value.__enter__.return_value
         mock_repo.assert_called_with(mocked_session)
 
-        mock_repo.return_value.get_active_for_entity_id.assert_called_with('CAT', 'ENT', 'entity id')
+        mock_repo.return_value.get_active_for_entity_id.assert_called_with(0, 'CAT', 'ENT', 'entity id')
 
         mocked_entity = mock_repo.return_value.get_active_for_entity_id.return_value
         next = mocked_entity.update_message.get_next_queued_update_object.return_value
