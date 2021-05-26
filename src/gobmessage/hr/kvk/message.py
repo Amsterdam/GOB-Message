@@ -92,6 +92,7 @@ def start_update_object_workflow(update_object: UpdateObject):
     }
     arguments = {
         'header': {
+            'message_id': update_object.update_message.id,
             'catalogue': update_object.catalogue,
             'entity': update_object.collection,
             'collection': update_object.collection,
@@ -149,6 +150,7 @@ def update_object_complete_handler(msg):
     with DatabaseSession() as session:
         repo = UpdateObjectRepository(session)
         update_object = repo.get_active_for_entity_id(
+            msg['header']['message_id'],
             msg['header']['catalogue'],
             msg['header']['entity'],
             msg['header']['entity_id']
