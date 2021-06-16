@@ -48,7 +48,7 @@ class KvkUpdateMessageProcessor:
     def _is_valid_inschrijving(self, inschrijving: dict):
         if inschrijving['product'] is None:
             raise ValueError(f'Inschrijving not valid for message_id {self.message.id};\n'
-                             f' response: {inschrijving["meldingen"]}')
+                             f' response: {inschrijving.get("meldingen")}')
 
     def _process_inschrijving(self, inschrijving: dict) -> list[UpdateObject]:
         self._is_valid_inschrijving(inschrijving)
