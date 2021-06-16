@@ -1,4 +1,4 @@
-from gobmessage.mapping.mapper import Mapper, MapperRegistry
+from gobmessage.mapping.mapper import Mapper, MapperRegistry, get_value
 from gobmessage.mapping.value_converter import ValueConverter
 
 
@@ -95,15 +95,35 @@ class VestigingenMapper(Mapper):
     }
 
     def map(self, source: dict) -> dict:
-        if source.get('commercieleVestiging'):
-            return super().map(source['commercieleVestiging']) | {'is_commerciele_vestiging': True}
-        else:
-            return super().map(source.get('nietCommercieleVestiging', {})) | {'is_commerciele_vestiging': False}
+        is_cv = 'commercieleVestiging' in source
+        source = self._get_cv_or_ncv(source)
+        source = self._enrich_activities(source)
+
+        return super().map(source) | {'is_commerciele_vestiging': is_cv}
+
+    def _enrich_activities(self, source: dict) -> dict:
+        activities = get_value(source, self.fields['heeft_sbi_activiteiten']['_base'])
+
+        if activities:
+            update = {
+                'kvkNummer': get_value(source, self.fields['is_een_uitoefening_van']['bronwaarde']),
+                'vestigingsnummer': get_value(source, self.fields['vestigingsnummer'])
+            }
+            source['activiteiten']['sbiActiviteit'] = [act | update for act in activities]
+
+        return source
+
+    def _get_cv_or_ncv(self, source: dict) -> dict:
+        return source.get('commercieleVestiging') or source.get('nietCommercieleVestiging', {})
 
     def get_locaties(self, source: dict) -> list[dict]:
         keys = ['bezoekLocatie', 'postLocatie']
-        res = source.get('commercieleVestiging') or source.get('nietCommercieleVestiging', {})
-        return [res[key] for key in keys if res[key] is not None]
+        ves = self._get_cv_or_ncv(source)
+
+        return [ves[key] for key in keys if ves[key] is not None]
+
+    def get_activities(self, source: dict) -> list[dict]:
+        return get_value(self._get_cv_or_ncv(source), self.fields['heeft_sbi_activiteiten']['_base'])
 
 
 MapperRegistry.register(VestigingenMapper)
@@ -259,8 +279,29 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
         },
         'heeft_postadres': {
             'bronwaarde': 'postLocatie.volledigAdres',
-        },
+        }
     }
+
+    def map(self, source: dict) -> dict:
+        source = self._enrich_activities(source)
+        return super().map(source)
+
+    def _enrich_activities(self, source: dict) -> dict:
+        field_kvknr = self.fields['kvknummer']
+        update = {field_kvknr: source[field_kvknr]}
+
+        # NietCommercieel
+        ncomm_act = get_value(source, self.fields['heeft_sbi_activiteiten_voor_maatschappelijke_activiteit']['_base'])
+        if ncomm_act:
+            source['sbiActiviteit'] = [activity | update for activity in ncomm_act]
+
+        # Commercieel
+        comm_act = get_value(source, self.fields['heeft_sbi_activiteiten_voor_onderneming']['_base'])
+        if comm_act:
+            source['manifesteertZichAls']['onderneming']['sbiActiviteit'] = \
+                [activity | update for activity in comm_act]
+
+        return source
 
     def get_vestigingsnummers(self, mapped_mac_entity: dict) -> list[int]:
         return [item['bronwaarde'] for item in
@@ -269,3 +310,36 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
 
 
 MapperRegistry.register(MaatschappelijkeActiviteitenMapper)
+
+
+class SbiActiviteitenMapper(Mapper):
+    """Assumes activiteiten are enriched with kvknummer/vestigingsnummer/rsin or bsn to construct relations."""
+    catalogue = 'hr'
+    collection = 'sbiactiviteiten'
+    entity_id = 'sbi_activiteit_nummer'
+    version = '0.1'
+
+    fields = {
+        'sbi_activiteit_nummer': (
+            ValueConverter.concat('.'), 'kvkNummer', 'vestigingsnummer', '<secure_rsin_or_bsn>', 'sbiCode.code'
+        ),
+        'sbi_code': 'sbiCode.code',
+        'omschrijving': 'sbiCode.omschrijving',
+        'is_hoofdactiviteit': (ValueConverter.jn_to_bool, 'isHoofdactiviteit.code'),
+        'volgorde': 'volgorde',
+        'datum_aanvang_sbiactiviteit': (ValueConverter.to_incomplete_date, 'registratie.datumAanvang'),
+        'datum_einde_sbiactiviteit': (ValueConverter.to_incomplete_date, 'registratie.datumEinde'),
+        'tijdstip_registratie': (ValueConverter.to_datetime, 'registratie.registratieTijdstip'),
+        'heeft_als_maatschappelijkactiviteit': {
+            'bronwaarde': 'kvkNummer'
+        },
+        'heeft_als_vestiging': {
+            'bronwaarde': 'vestigingsnummer'
+        },
+        'heeft_als_rechtspersoon': {
+            'bronwaarde': 'nog_niet_beschikbaar'
+        }
+    }
+
+
+MapperRegistry.register(SbiActiviteitenMapper)

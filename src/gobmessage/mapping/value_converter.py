@@ -66,7 +66,7 @@ class ValueConverter:
     @staticmethod
     def concat(char: str):
         def converter(*values):
-            return char.join(values)
+            return char.join([val for val in values if val is not None])
         return converter
 
     @staticmethod

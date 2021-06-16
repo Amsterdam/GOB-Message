@@ -35,10 +35,16 @@ class KvkUpdateMessageRepository(Repository):
 class UpdateObjectRepository(Repository):
     object_class = UpdateObject
 
-    def get_active_for_entity_id(self, catalogue: str, collection: str, entity_id: str):
-        return self.session \
-            .query(self.object_class) \
-            .filter_by(catalogue=catalogue, collection=collection, entity_id=entity_id,
-                       status=UpdateObject.STATUS_STARTED) \
-            .order_by(UpdateObject.created_at) \
+    def get_active_for_entity_id(self, message_id: int, catalogue: str, collection: str, entity_id: str):
+        return (
+            self.session
+            .query(self.object_class)
+            .filter_by(
+                update_message_id=message_id,
+                catalogue=catalogue,
+                collection=collection,
+                entity_id=entity_id,
+                status=self.object_class.STATUS_STARTED
+            )
             .first()
+        )

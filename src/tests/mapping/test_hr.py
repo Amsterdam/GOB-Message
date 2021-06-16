@@ -1,6 +1,65 @@
 from unittest import TestCase
 
-from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper, VestigingenMapper
+from gobmessage.mapping.hr import MaatschappelijkeActiviteitenMapper, LocatiesMapper, VestigingenMapper, \
+    SbiActiviteitenMapper
+
+
+class TestSbiActiviteitenMapper(TestCase):
+
+    def test_map(self):
+        source = {
+            'registratie': {
+                'datumAanvang': '20181101'
+            },
+            'kvkNummer': '123456789',
+            'sbiActiviteit': [
+                {
+                    'kvkNummer': '123456789',  # enriched by MaatschappelijkeActiviteit.map
+                    'sbiCode': {
+                        'code': '01133',
+                        'omschrijving': 'Teelt van groenten in de volle grond',
+                        'referentieType': 'ActiviteitCode',
+                    },
+                    'volgorde': 0,
+                    'isHoofdactiviteit': {
+                        'code': 'J'
+                    },
+                    'registratie': {
+                        'datumAanvang': '20200101',
+                        'datumEinde': '20200102',
+                        'registratieTijdstip': '20181101162418910'
+                    }
+                }
+            ]
+        }
+        expected = [{
+            'sbi_activiteit_nummer': '123456789.01133',
+            'sbi_code': '01133',
+            'omschrijving': 'Teelt van groenten in de volle grond',
+            'is_hoofdactiviteit': True,
+            'volgorde': 0,
+            'datum_aanvang_sbiactiviteit': '2020-01-01',
+            'datum_einde_sbiactiviteit': '2020-01-02',
+            'tijdstip_registratie': '2018-11-01T16:24:18.910000',
+            'heeft_als_maatschappelijkactiviteit': {
+                'bronwaarde': '123456789'
+            },
+            'heeft_als_vestiging': {
+                'bronwaarde': None
+            },
+            'heeft_als_rechtspersoon': {
+                'bronwaarde': None
+            }
+        }]
+
+        m = SbiActiviteitenMapper()
+        self.assertEqual([m.map(a) for a in source['sbiActiviteit']], expected)
+
+        # Enriched by VestigingMapper.map
+        source['sbiActiviteit'][0]['vestigingsnummer'] = '1233455644'
+        expected[0]['heeft_als_vestiging']['bronwaarde'] = '1233455644'
+        expected[0]['sbi_activiteit_nummer'] = '123456789.1233455644.01133'
+        self.assertEqual([m.map(a) for a in source['sbiActiviteit']], expected)
 
 
 class TestVestigingenMapper(TestCase):
@@ -327,6 +386,24 @@ class TestVestigingenMapper(TestCase):
         expected = [{'volledigAdres': 'Volledig adres 5 Amsterdam'}]
         locs = VestigingenMapper().get_locaties(src)
         self.assertEqual(locs, expected)
+
+    def test_get_activities(self):
+        src = {
+            'commercieleVestiging': None,
+            'nietCommercieleVestiging': {
+                'vestigingsnummer': '12345',
+                'activiteiten': {
+                    'omschrijving': 'Dit is de omschrijving.',
+                    'sbiActiviteit': [
+                        {'sbiCode': {'code': '01133'}},
+                        {'sbiCode': {'code': '01134'}}
+                    ]
+                }
+            }
+        }
+        expected = [{'sbiCode': {'code': '01133'}}, {'sbiCode': {'code': '01134'}}]
+
+        self.assertEqual(VestigingenMapper().get_activities(src), expected)
 
 
 class TestLocatiesMapper(TestCase):
