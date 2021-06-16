@@ -38,15 +38,22 @@ class KvkUpdateMessageProcessor:
         keys = ['product'] + base_path.split('.')
         current = obj
 
-        try:
-            for key in keys:
-                current = current[key]
-        except KeyError:
-            return {}
+        for key in keys:
+            if not current or key not in current:
+                return {}
+            current = current[key]
+
         return current
 
+    def _is_valid_inschrijving(self, inschrijving: dict):
+        if inschrijving['product'] is None:
+            raise ValueError(f'Inschrijving not valid for message_id {self.message.id};\n'
+                             f' response: {inschrijving["meldingen"]}')
+
     def _process_inschrijving(self, inschrijving: dict) -> list[UpdateObject]:
+        self._is_valid_inschrijving(inschrijving)
         res = []
+
         for base_path, mapper in self.inschrijving_entities.items():
             base = self._get_base(base_path, inschrijving)
 
