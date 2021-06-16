@@ -41,6 +41,9 @@ class TestKvkUpdateMessageProcessor(TestCase):
         res = p._process_inschrijving({'product': {'m': {'a': {'some': 'inschrijving'}}}})
         self.assertEqual([process_result], res)
 
+        with self.assertRaises(ValueError):
+            p._process_inschrijving({'product': None, 'meldingen': 'melding'})
+
         p._process_entity.assert_called_with({'some': 'inschrijving'}, ANY)
         call_args = p._process_entity.call_args
         self.assertIsInstance(call_args[0][1], TestMapper)

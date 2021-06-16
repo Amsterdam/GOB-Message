@@ -77,7 +77,12 @@ class VestigingenMapper(Mapper):
         'heeft_sbi_activiteiten': {
             '_list': True,
             '_base': 'activiteiten.sbiActiviteit',
-            'bronwaarde': 'sbiCode.code',
+            'bronwaarde': (
+                ValueConverter.concat('.'),
+                'kvkNummer',  # enriched
+                'vestigingsnummer',  # enriched
+                'sbiCode.code'
+            ),
         },
 
         # Samenvoeging vestigingen
@@ -257,12 +262,12 @@ class MaatschappelijkeActiviteitenMapper(Mapper):
         'heeft_sbi_activiteiten_voor_onderneming': {
             '_list': True,
             '_base': 'manifesteertZichAls.onderneming.sbiActiviteit',
-            'bronwaarde': 'sbiCode.code',
+            'bronwaarde': (ValueConverter.concat('.'), 'kvkNummer', 'sbiCode.code'),
         },
         'heeft_sbi_activiteiten_voor_maatschappelijke_activiteit': {
             '_list': True,
             '_base': 'sbiActiviteit',
-            'bronwaarde': 'sbiCode.code',
+            'bronwaarde': (ValueConverter.concat('.'), 'kvkNummer', 'sbiCode.code'),
         },
         'wordt_uitgeoefend_in_commerciele_vestiging': {
             '_list': True,
