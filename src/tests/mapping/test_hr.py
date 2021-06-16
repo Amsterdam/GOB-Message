@@ -177,8 +177,8 @@ class TestVestigingenMapper(TestCase):
             ],
             'activiteiten_omschrijving': 'Dit is de omschrijving.',
             'heeft_sbi_activiteiten': [
-                {'bronwaarde': '01133'},
-                {'bronwaarde': '01134'},
+                {'bronwaarde': '90000250.1480124014.01133'},
+                {'bronwaarde': '90000250.1480124014.01134'}
             ],
             'is_overgegaan_in_vestiging': [
                 {'bronwaarde': '12344450236'},
@@ -339,7 +339,7 @@ class TestVestigingenMapper(TestCase):
                 'isEenUitoefeningVan': {
                     'maatschappelijkeActiviteit': {
                         'extraElementen': None,
-                        'kvkNummer': '90000633',
+                        'kvkNummer': '90000250',
                         'naam': 'De naam'
                     }
                 }
@@ -358,7 +358,7 @@ class TestVestigingenMapper(TestCase):
             'deeltijd_werkzame_personen': None,
             'importeert': None,
             'exporteert': None,
-            'is_een_uitoefening_van': {'bronwaarde': '90000633'}
+            'is_een_uitoefening_van': {'bronwaarde': '90000250'}
         }
         self.assertEqual(ncv_expected, m.map(ncv_source))
 
@@ -810,12 +810,12 @@ class TestMaatschappelijkeActiviteitenMapper(TestCase):
                 'bronwaarde': '123456789'
             },
             'heeft_sbi_activiteiten_voor_onderneming': [
-                {'bronwaarde': '01131'},
-                {'bronwaarde': '01132'},
+                {'bronwaarde': '123456789.01131'},
+                {'bronwaarde': '123456789.01132'},
             ],
             'heeft_sbi_activiteiten_voor_maatschappelijke_activiteit': [
-                {'bronwaarde': '01133'},
-                {'bronwaarde': '01134'},
+                {'bronwaarde': '123456789.01133'},
+                {'bronwaarde': '123456789.01134'},
             ],
             'wordt_uitgeoefend_in_commerciele_vestiging': [
                 {'bronwaarde': '12344450234'},
