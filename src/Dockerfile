@@ -34,9 +34,6 @@ COPY gobmessage gobmessage
 COPY alembic alembic
 COPY alembic.ini alembic.ini
 
-# Copy deploy dir
-COPY deploy /deploy/
-
 # OAuth2 Proxy
 COPY ./oauth2-proxy oauth2-proxy
 COPY ./oauth2-proxy.cfg oauth2-proxy.cfg
@@ -45,4 +42,4 @@ RUN mkdir -p /var/log/oauth2-proxy && chown datapunt /var/log/oauth2-proxy
 
 USER datapunt
 
-CMD ["/deploy/docker-run.sh"]
+CMD uwsgi
