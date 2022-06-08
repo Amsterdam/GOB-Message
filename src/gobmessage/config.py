@@ -31,7 +31,7 @@ HR_CERTFILE = _getenv("HR_CERTFILE", is_optional=True)
 KVK_DATASERVICE_ADDRESS = _getenv("KVK_DATASERVICE_ADDRESS", is_optional=True)
 
 DATABASE_CONFIG = {
-    'drivername': 'postgres',
+    'drivername': 'postgresql',
     'username': os.getenv("GOB_MESSAGE_DATABASE_USER", "gob_message"),
     'password': os.getenv("GOB_MESSAGE_DATABASE_PASSWORD", "insecure"),
     'host': os.getenv("GOB_MESSAGE_DATABASE_HOST", "localhost"),
