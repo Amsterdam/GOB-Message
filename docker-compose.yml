@@ -23,7 +23,7 @@ services:
       UWSGI_BUFFER_SIZE: "8192"
       UWSGI_DIE_ON_TERM: "1"
       UWSGI_NEED_APP: "1"
-      UWSGI_ATTACH_DAEMON2: "cmd=./oauth2-proxy --config oauth2-proxy.cfg,freq=3,control=true,stopsignal=15"
+      #UWSGI_ATTACH_DAEMON2: "cmd=./oauth2-proxy --config oauth2-proxy.cfg,freq=3,control=true,stopsignal=15"
 
       API_HOST: http://gobapi:8001
       HR_KEYFILE: /app/${HR_KEYFILE}
@@ -32,7 +32,7 @@ services:
       GOB_SHARED_DIR: /app/shared
       GOB_MESSAGE_DATABASE_HOST: message_database
       GOB_MESSAGE_DATABASE_PORT: 5432
-      
+
       OAUTH2_PROXY_CLIENT_ID: ${OAUTH2_PROXY_CLIENT_ID}
       OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET}
       OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET}
@@ -62,5 +62,5 @@ volumes:
 
 networks:
   default:
-    external:
-      name: gob-network
+    external: true
+    name: gob-network
