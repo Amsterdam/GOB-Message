@@ -31,7 +31,7 @@ COPY gobmessage gobmessage
 # Create directory for client certs
 RUN mkdir -p /certs/gob/ && chmod -R 755 /certs
 
-# Copy alembic config
+# Copy Alembic config
 COPY alembic alembic
 COPY alembic.ini alembic.ini
 
@@ -44,3 +44,19 @@ RUN mkdir -p /var/log/oauth2-proxy && chown datapunt /var/log/oauth2-proxy
 USER datapunt
 
 CMD uwsgi
+
+
+# Test.
+FROM application as test
+USER root
+
+# Remove gobcore tests.
+RUN rm -rf /app/src/gobcore/tests
+
+# Copy tests module and tests
+COPY tests tests
+COPY .flake8 .flake8
+COPY test.sh test.sh
+
+# Copy Jenkins files
+COPY .jenkins /.jenkins
