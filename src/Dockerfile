@@ -28,7 +28,7 @@ RUN rm -rf /opt/wheelhouse
 # Copy gobmessage module.
 COPY gobmessage gobmessage
 
-# Create directory for client certs
+# Create directory for client certs (datapunt Openstack).
 RUN mkdir -p /certs/gob/ && chmod -R 755 /certs
 
 # Copy Alembic config
