@@ -55,8 +55,10 @@ RUN rm -rf /app/src/gobcore/tests
 
 # Copy tests module and tests
 COPY tests tests
-COPY .flake8 .flake8
-COPY test.sh test.sh
+COPY test.sh pytest.ini .flake8 ./
 
 # Copy Jenkins files
 COPY .jenkins /.jenkins
+
+RUN chown -R datapunt /app/tests
+USER datapunt
