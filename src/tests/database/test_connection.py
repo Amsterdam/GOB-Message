@@ -101,7 +101,7 @@ class TestStorage(TestCase):
         gobmessage.database.connection.engine = MockedEngine()
         gobmessage.database.connection.session = MockedSession()
 
-    @mock.patch("gobmessage.database.connection.URL")
+    @mock.patch("gobmessage.database.connection.URL.create")
     @mock.patch("gobmessage.database.connection.migrate_storage")
     @mock.patch("gobmessage.database.connection.create_engine")
     def test_connect(self, mock_create, mock_migrate, mock_url):

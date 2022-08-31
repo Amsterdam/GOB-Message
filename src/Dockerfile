@@ -1,36 +1,37 @@
-FROM amsterdam/python:3.9-buster
+# syntax=docker/dockerfile:1
+FROM amsterdam/gob_wheelhouse:3.9-buster as wheelhouse
 MAINTAINER datapunt@amsterdam.nl
 
-RUN apt-get update && apt-get install -y libxml2-dev libxmlsec1-dev
 
-# Install gobmessage in /app folder
+# Application stage.
+FROM amsterdam/gob_baseimage:3.9-buster as application
+MAINTAINER datapunt@amsterdam.nl
+# GOB base image: SQL Server driver.
+
+# libxml
+RUN apt-get install -y libxml2-dev libxmlsec1-dev
+
+# Fill the wheelhouse.
+COPY --from=wheelhouse /opt/wheelhouse /opt/wheelhouse
+
+# Install gobmessage in /app folder.
 WORKDIR /app
 
-# Install SQL Server driver
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
-
-# Install GDAL
-RUN apt-get install -y libgdal-dev
-
-# Update C env vars so compiler can find gdal
-ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-ENV C_INCLUDE_PATH=/usr/include/gdal
-
-# Install required Python packages
+# Install required Python packages.
 COPY requirements.txt /app/
-RUN LIBGDAL_VERSION=$(gdal-config --version) pip3 install --no-cache-dir -r requirements.txt
+RUN LIBGDAL_VERSION=$(gdal-config --version) pip install --no-cache-dir \
+	--find-links /opt/wheelhouse --requirement requirements.txt
 RUN rm requirements.txt
+# Wheelhouse cleanup.
+RUN rm -rf /opt/wheelhouse
 
-# Create directory for client certs
-RUN mkdir -p /certs/gob/ && chmod -R 755 /certs
-
-# Copy gobmessage module
+# Copy gobmessage module.
 COPY gobmessage gobmessage
 
-# Copy alembic config
+# Create directory for client certs (datapunt Openstack).
+RUN mkdir -p /certs/gob/ && chmod -R 755 /certs
+
+# Copy Alembic config
 COPY alembic alembic
 COPY alembic.ini alembic.ini
 
@@ -43,3 +44,20 @@ RUN mkdir -p /var/log/oauth2-proxy && chown datapunt /var/log/oauth2-proxy
 USER datapunt
 
 CMD uwsgi
+
+
+# Test.
+FROM application as test
+USER root
+
+# Remove gobcore tests.
+RUN rm -rf /app/src/gobcore/tests
+
+# Copy tests module and tests.
+COPY tests tests
+COPY test.sh pytest.ini .flake8 ./
+
+# Copy Jenkins files.
+COPY .jenkins /.jenkins
+
+USER datapunt
