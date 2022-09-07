@@ -42,7 +42,6 @@ RUN chmod 755 oauth2-proxy
 RUN mkdir -p /var/log/oauth2-proxy && chown datapunt /var/log/oauth2-proxy
 
 USER datapunt
-
 CMD uwsgi
 
 
@@ -53,9 +52,9 @@ USER root
 # Remove gobcore tests.
 RUN rm -rf /app/src/gobcore/tests
 
-# Copy tests module and tests.
-COPY tests tests
+# Copy test module and tests.
 COPY test.sh pytest.ini .flake8 ./
+COPY tests tests
 
 # Copy Jenkins files.
 COPY .jenkins /.jenkins
