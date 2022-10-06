@@ -1,7 +1,7 @@
 Flask==2.0.3
 Flask-Cors==3.0.10
 freezegun==1.2.2
--e git+https://github.com/Amsterdam/GOB-Core.git@v0.17.20#egg=gobcore
+-e git+https://github.com/Amsterdam/GOB-Core.git@v1.10.0#egg=gobcore
 xmlsec==1.3.12
 zeep==4.1.0
 alembic==1.8.1
