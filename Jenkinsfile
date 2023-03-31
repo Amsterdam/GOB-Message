@@ -26,12 +26,13 @@ node('GOBBUILD') {
         }
 
         stage('Test') {
-            tryStep "test", {
-                sh "docker-compose -p GOB-Message_service -f src/.jenkins/test/docker-compose.yml build --no-cache && " +
-                   "docker-compose -p GOB-Message_service -f src/.jenkins/test/docker-compose.yml run --rm test"
-
-            }, {
-                sh "docker-compose -p GOB-Message_service -f src/.jenkins/test/docker-compose.yml down"
+            lock("gob-message-test") {
+                tryStep "test", {
+                    sh "docker-compose -p GOB-Message_service -f src/.jenkins/test/docker-compose.yml build --no-cache && " +
+                    "docker-compose -p GOB-Message_service -f src/.jenkins/test/docker-compose.yml run --rm test"
+                }, {
+                    sh "docker-compose -p GOB-Message_service -f src/.jenkins/test/docker-compose.yml down"
+                }
             }
         }
 
