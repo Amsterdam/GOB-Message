@@ -1,15 +1,16 @@
 # syntax=docker/dockerfile:1
-FROM amsterdam/gob_wheelhouse:3.9-bullseye as wheelhouse
+FROM amsterdam/gob_wheelhouse:3.9-slim-bullseye as wheelhouse
 MAINTAINER datapunt@amsterdam.nl
 
 
 # Application stage.
-FROM amsterdam/gob_baseimage:3.9-bullseye as application
+FROM amsterdam/gob_baseimage:3.9-slim-bullseye as application
 MAINTAINER datapunt@amsterdam.nl
 # GOB base image: SQL Server driver.
 
 # libxml
-RUN apt-get install -y libxml2-dev libxmlsec1-dev
+RUN apt-get update && apt-get install -y libxml2-dev libxmlsec1-dev
+RUN rm -rf /var/lib/apt/lists/*
 
 # Fill the wheelhouse.
 COPY --from=wheelhouse /opt/wheelhouse /opt/wheelhouse
